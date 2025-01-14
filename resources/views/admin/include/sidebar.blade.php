@@ -15,14 +15,14 @@
                     <ul class="menu">
                         <li class="sidebar-title">Menu</li>
 
-                        <li class="sidebar-item  {{ Route::is('admin.dashboard.index') ? 'active' : '' }}">
+                        <li class="sidebar-item {{ Str::contains(Route::currentRouteName(), 'dashboard') ? 'active' : '' }}">
                             <a href="{{ route('admin.dashboard.index')}}" class='sidebar-link'>
                                 <i class="bi bi-grid-fill"></i>
                                 <span>Dashboard</span>
                             </a>
                         </li>
 
-                        <li class="sidebar-item  {{ Route::is('admin.building.index') ? 'active' : '' }}">
+                        <li class="sidebar-item  {{ Str::contains(Route::currentRouteName(), 'building') ? 'active' : '' }}">
                             <a href="{{ route('admin.building.index')}}" class='sidebar-link'>
                                 <i class="bi bi-grid-fill"></i>
                                 <span>Building</span>

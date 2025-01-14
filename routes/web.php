@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
@@ -70,9 +71,12 @@ Route::group([ 'as' => 'admin.'], function () {
 
 
     Route::group(['prefix'=> 'building' , 'as' => 'building.' ], function () {
-        Route::get('/', function () {
-            return view('admin.building.index');
-        })->name('index');
+        Route::get('/', [BuildingController::class,'index'])->name('index');
+        Route::get('/create', [BuildingController::class,'create'])->name('create');
+        Route::post('/store', [BuildingController::class,'store'])->name('store');
+        Route::get('/show/{id}', [BuildingController::class,'show'])->name('show');
+        Route::get('/update/{id}', [BuildingController::class,'update'])->name('update');
+        Route::delete('/delete/{id}', [BuildingController::class,'delete'])->name('delete');
     });
     
 });
