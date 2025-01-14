@@ -10,6 +10,16 @@ Route::get('/', function () {
 
 Route::post('login' , [LoginController::class,'login'])->name('login');
 
+Route::get('git-pull', function () {
+  try{
+    
+  } catch (\Exception $e) {
+    return response()->json([
+        'message' => 'Git pull failed!',
+        'error' => $e->getMessage()
+    ], 500);
+}
+})->name('git-pull');
 
 Route::group(['middleware' => ['auth'] , 'as' => 'admin.'], function () {
 

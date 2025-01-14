@@ -33,7 +33,7 @@
                         <li class="sidebar-item  ">
                             <a href="https://zuramai.github.io/mazer/docs" class="sidebar-link">
                                 <i class="bi bi-life-preserver"></i>
-                                <span>Documentation</span>
+                                <span>Get Updatee</span>
                             </a>
                         </li>
 
