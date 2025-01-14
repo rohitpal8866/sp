@@ -28,6 +28,13 @@
                             </a>
                         </li>
 
+                        <li class="sidebar-item  {{ Str::contains(Request::url(), 'account-configuration') ? 'active' : '' }}">
+                            <a href="{{ route('admin.siteconfig.index')}}" class='sidebar-link'>
+                                <i class="bi bi-grid-fill"></i>
+                                <span>Account Configuration</span>
+                            </a>
+                        </li>
+
                         <li class="sidebar-title">Raise Support</li>
                         <li class="sidebar-item  ">
                             <a href="{{route('git-pull')}}" class="sidebar-link" target="_blank">

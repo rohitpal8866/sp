@@ -3,6 +3,7 @@
 use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\FlatController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\SiteConfigurationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -91,5 +92,12 @@ Route::group([ 'as' => 'admin.'], function () {
     });
 
 
+    // WebSite Configuration
+    Route::group(['prefix'=> 'account-configuration' , 'as' => 'siteconfig.'], function () {
+        Route::get('/', [SiteConfigurationController::class,'index'])->name('index');
+        Route::post('/store', [SiteConfigurationController::class,'store'])->name('store');
+        Route::put('/update', [SiteConfigurationController::class,'update'])->name('update');
+        Route::delete('/delete/{id}', [SiteConfigurationController::class,'delete'])->name('delete');
+    });
     
 });
