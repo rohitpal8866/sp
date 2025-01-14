@@ -75,7 +75,7 @@ Route::group([ 'as' => 'admin.'], function () {
         Route::get('/create', [BuildingController::class,'create'])->name('create');
         Route::post('/store', [BuildingController::class,'store'])->name('store');
         Route::get('/show/{id}', [BuildingController::class,'show'])->name('show');
-        Route::get('/update/{id}', [BuildingController::class,'update'])->name('update');
+        Route::post('/update/{id}', [BuildingController::class,'update'])->name('update');
         Route::delete('/delete/{id}', [BuildingController::class,'delete'])->name('delete');
     });
     
