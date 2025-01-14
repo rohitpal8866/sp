@@ -12,7 +12,7 @@ Route::post('login' , [LoginController::class,'login'])->name('login');
 
 Route::get('git-pull', function () {
   try{
-    
+    exec('git pull');
   } catch (\Exception $e) {
     return response()->json([
         'message' => 'Git pull failed!',
