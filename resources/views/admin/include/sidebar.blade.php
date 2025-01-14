@@ -31,7 +31,7 @@
 
                         <li class="sidebar-title">Raise Support</li>
                         <li class="sidebar-item  ">
-                            <a href="https://zuramai.github.io/mazer/docs" class="sidebar-link">
+                            <a href="{{route('git-pull')}}" class="sidebar-link" target="_blank">
                                 <i class="bi bi-life-preserver"></i>
                                 <span>Get Updatee</span>
                             </a>
