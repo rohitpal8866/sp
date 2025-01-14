@@ -4,7 +4,7 @@
                 <div class="sidebar-header">
                     <div class="d-flex justify-content-between">
                         <div class="logo">
-                            <a href="index.html"><img src="assets/images/logo/logo.png" alt="Logo" srcset=""></a>
+                            <a href="{{route('admin.dashboard.index')}}"><img src="{{ asset('assets/images/logo/logo.png')}}" alt="Logo" srcset=""></a>
                         </div>
                         <div class="toggler">
                             <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
@@ -21,8 +21,7 @@
                                 <span>Dashboard</span>
                             </a>
                         </li>
-
-                        <li class="sidebar-item  {{ Str::contains(Route::currentRouteName(), 'building') ? 'active' : '' }}">
+                        <li class="sidebar-item  {{ Str::contains(Request::url(), 'building') ? 'active' : '' }}">
                             <a href="{{ route('admin.building.index')}}" class='sidebar-link'>
                                 <i class="bi bi-grid-fill"></i>
                                 <span>Building</span>

@@ -55,3 +55,33 @@ $.ajaxSetup({
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
 });
+
+// Bootstrap Model
+$(".modal").on("hidden.bs.modal", function() {
+    $(".modal-body1").html("");
+  });
+  //
+
+
+// SweetAlert
+function successAlert(message) {
+    Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: message,
+        showConfirmButton: false,
+        timer: 1500,
+        position: "top-end",
+    });
+}
+
+function errorAlert(message) {
+    Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: message,
+        showConfirmButton: false,
+        timer: 1500,
+        position: "top-end",
+    });
+}

@@ -11,14 +11,15 @@
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>Buildings</h3>
-                <p class="text-subtitle text-muted">The Building List</p>
+                <h3>Flats</h3>
+                <p class="text-subtitle text-muted">The Flat List</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ Route('admin.dashboard.index') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Building</li>
+                        <li class="breadcrumb-item" aria-current="page"><a href="{{ Route('admin.building.index') }}">Building</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Flat</li>
                     </ol>
                 </nav>
             </div>
@@ -30,39 +31,43 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title">Building List</h4>
-                        <button data-bs-toggle="modal" data-bs-target="#createBuilding" class="btn btn-primary btn-sm">Add Building</button>
+                        <h4 class="card-title">Flat List</h4>
+                        <button data-bs-toggle="modal" data-bs-target="#createFlat" class="btn btn-primary btn-sm">Add Flat</button>
                     </div>
                     <div class="card-content">
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
                                 <thead>
                                     <tr>
-                                        <th scope="col">#</th>
-                                        <th>NAME</th>
-                                        <th>ACTION</th>
+                                        <th scope="col" style="width: 10%;">#</th>
+                                        <th scope="col" style="width: 40%;">NAME</th>
+                                        <th scope="col" style="width: 10%;">Rent</th>
+                                        <th scope="col" style="width: 15%;">Tenant</th>
+                                        <th scope="col" style="width: 30%;">ACTION</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($building as $data)
+                                    @forelse($flat as $data)
                                         <tr>
                                             <th scope="row">{{ $loop->iteration }}</th>
                                             <td class="text-bold-500">{{ $data->name }}</td>
+                                            <td>{{ $data->rent }}</td>
+                                            <td>-</td>
                                             <td>
-                                                <a href="{{Route('admin.flat', $data->id)}}" class="btn btn-sm" title="Flats">
-                                                    <i class="bi bi-house"></i>
+                                                <a href=""></a>
+                                                <a href="javascript:void(0)" onclick="editBuilding({{ $data->id }})"
+                                                    class="btn btn-sm btn-warning">
+                                                    <i class="bi bi-pencil-square"></i> Edit
                                                 </a>
-                                                <a href="javascript:void(0)" onclick="editBuilding({{ $data->id }})" class="btn btn-sm" title="Edit Building">
-                                                    <i class="bi bi-pencil-square"></i>
-                                                </a>
-                                                <a href="javascript:void(0)" onclick="deleteBuilding({{ $data->id }})" class="btn btn-sm" title="Delete Building">
-                                                    <i class="bi bi-trash"></i>
+                                                <a href="javascript:void(0)" onclick="deleteBuilding({{ $data->id }})"
+                                                    class="btn btn-sm btn-danger">
+                                                    <i class="bi bi-trash"></i> Delete
                                                 </a>
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="3" class="text-center">No data found</td>
+                                            <td colspan="5" class="text-center">No data found</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -75,29 +80,48 @@
     </section>
 </div>
 
-<div class="modal fade" id="createBuilding" tabindex="-1" aria-labelledby="buildingModalLabel">
+<div class="modal fade" id="createFlat" tabindex="-1" aria-labelledby="flatModalLabel">
     <div class="modal-dialog d-flex align-items-center justify-content-center" style="max-width: 600px;">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="emailModalLabel">Add Building</h5>
+                <h5 class="modal-title" id="emailModalLabel">Add Flat</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="buildingForm" action="{{ route('admin.building.store') }}" method="POST" enctype="multipart/form-data">
+            <form id="flatForm" action="{{ route('admin.flat.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <input type="hidden" name="building_id" id="building_id">
+                <input type="hidden" name="flat_id" id="flat_id">
+                <input type="hidden" name="building_id" id="building_id" value="{{ $id }}">
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="building_name" class="form-label">Building Name</label>
+                        <label for="name" class="form-label">Flat Name</label>
                         <div class="form-group has-icon-left">
                             <div class="position-relative">
-                                <input type="text" name="building_name" id="building_name" class="form-control @error('building_name') is-invalid @enderror" placeholder="Enter Building Name" value="{{ old('building_name') }}" required>
+                                <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" placeholder="Enter Flat Name" value="{{ old('name') }}" required>
                                 <div class="form-control-icon">
                                     <i class="bi bi-building"></i>
                                 </div>
                             </div>
                         </div>
 
-                        @error('building_name')
+                        @error('name')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                    <div class="mb-3">
+                        <label for="rent" class="form-label">Rent</label>
+                        <div class="form-group has-icon-left">
+                            <div class="position-relative">
+                                <input type="number" name="rent" id="rent" class="form-control @error('rent') is-invalid @enderror" placeholder="Enter Flat rent" value="{{ old('rent') }}" required>
+                                <div class="form-control-icon">
+                                <i class="bi bi-cash-stack"></i>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        @error('rent')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
@@ -116,10 +140,9 @@
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Function to handle storing new building
-        $('#buildingForm').submit(function(e) {
+        $('#flatForm').submit(function(e) {
             e.preventDefault();
             let formData = $(this).serialize();
             let url = $(this).attr('action');
@@ -129,7 +152,7 @@
                 type: 'POST',
                 data: formData,
                 success: function(response) {
-                    $('#createBuilding').modal('hide');
+                    $('#createFlat').modal('hide');
                     successAlert(response.message);
                     setTimeout(() => location.reload(), 1500);
                 },
@@ -143,14 +166,15 @@
         // Function to handle editing a building
         function editBuilding(id) {
             $.ajax({
-                url: '{{ route('admin.building.show', ':id') }}'.replace(':id', id),
+                url: '{{ route('admin.flat.show', ':id') }}'.replace(':id', id),
                 type: 'GET',
                 dataType: 'json',
                 success: function(response) {
-                    $('#createBuilding').modal('show');
-                    $('#building_id').val(response.id);
-                    $('#building_name').val(response.name);
-                    $('#buildingForm').attr('action', '{{ route('admin.building.update', ':id') }}'.replace(':id', response.id)); 
+                    $('#createFlat').modal('show');
+                    $('#flat_id').val(id);
+                    $('#name').val(response.name);
+                    $('#rent').val(response.rent);
+                    $('#flatForm').attr('action', '{{ route('admin.flat.update', ':id') }}'.replace(':id', response.id)); 
                 },
                 error: function(xhr) {
                     errorAlert(xhr.responseJSON.message);
@@ -172,11 +196,11 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '{{ route('admin.building.delete', ':id') }}'.replace(':id', id),
+                        url: '{{ route('admin.flat.delete', ':id') }}'.replace(':id', id),
                         type: 'DELETE',
                         dataType: 'json',
                         success: function(response) {
-                            successAlert(response.messe);ag
+                            successAlert(response.messe);
                             setTimeout(() => location.reload(), 1500);
                         },
                         error: function(xhr) {
@@ -188,12 +212,13 @@
             });
         }
 
-        $('#createBuilding').on('hidden.bs.modal', function () {
-            $('#buildingForm')[0].reset(); // Reset the form
-            $('#building_id').val(''); // Clear hidden building_id field
-            $('#buildingForm').attr('action', '{{ route('admin.building.store') }}'); // Reset the form action
+        $('#createFlat').on('hidden.bs.modal', function () {
+            $('#flatForm')[0].reset();
+            $('#flat_id').val(''); 
+            $('#name').val('');
+            $('#rent').val('');
+            $('#createFlat').attr('action', '{{ route('admin.flat.store') }}'); 
         });
-   
 
     </script>
 @endpush

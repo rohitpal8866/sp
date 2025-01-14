@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BuildingController;
+use App\Http\Controllers\FlatController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
@@ -70,13 +71,25 @@ Route::group([ 'as' => 'admin.'], function () {
     });
 
 
-    Route::group(['prefix'=> 'building' , 'as' => 'building.' ], function () {
-        Route::get('/', [BuildingController::class,'index'])->name('index');
-        Route::get('/create', [BuildingController::class,'create'])->name('create');
-        Route::post('/store', [BuildingController::class,'store'])->name('store');
-        Route::get('/show/{id}', [BuildingController::class,'show'])->name('show');
-        Route::post('/update/{id}', [BuildingController::class,'update'])->name('update');
-        Route::delete('/delete/{id}', [BuildingController::class,'delete'])->name('delete');
+    Route::group(['prefix'=> 'building' ], function () {
+        // Building
+        Route::get('/', [BuildingController::class,'index'])->name('building.index');
+        Route::get('/create', [BuildingController::class,'create'])->name('building.create');
+        Route::post('/store', [BuildingController::class,'store'])->name('building.store');
+        Route::get('/show/{id}', [BuildingController::class,'show'])->name('building.show');
+        Route::post('/update/{id}', [BuildingController::class,'update'])->name('building.update');
+        Route::delete('/delete/{id}', [BuildingController::class,'delete'])->name('building.delete');
+
+        // Flat
+        Route::group(['prefix'=> 'flat'], function () {
+            Route::get('/{id}', [FlatController::class,'index'])->name('flat');
+            Route::post('/store', [FlatController::class,'store'])->name('flat.store');
+            Route::get('/show/{id}', [FlatController::class,'show'])->name('flat.show');
+            Route::post('/update/{id}', [FlatController::class,'update'])->name('flat.update');
+            Route::delete('/delete/{id}', [FlatController::class,'delete'])->name('flat.delete');
+        });
     });
+
+
     
 });
