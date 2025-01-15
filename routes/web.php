@@ -4,6 +4,7 @@ use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\FlatController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SiteConfigurationController;
+use App\Http\Controllers\TenantController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -91,6 +92,16 @@ Route::group([ 'as' => 'admin.'], function () {
         });
     });
 
+    // Tenant
+    Route::group(['prefix'=> 'tenant' , 'as' => 'tenant.'], function () {
+        Route::get('/', [TenantController::class,'index'])->name('index');
+        Route::post('/store', [TenantController::class,'store'])->name('store');
+        Route::get('/show/{id}', [TenantController::class,'show'])->name('show');
+        Route::post('/update/{id}', [TenantController::class,'update'])->name('update');
+        Route::get('/get-flats', [TenantController::class, 'getFlats'])->name('getFlats');
+        Route::delete('/delete/{id}', [TenantController::class,'delete'])->name('delete');
+
+    });
 
     // WebSite Configuration
     Route::group(['prefix'=> 'account-configuration' , 'as' => 'siteconfig.'], function () {

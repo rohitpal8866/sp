@@ -16,5 +16,22 @@ class BuildingSeeder extends Seeder
         Building::create([
             'name' => 'Shahajahan Palace',
         ]);
+    
+        Building::create([
+            'name' => 'Red Fort',
+        ]);
+    
+        Building::create([
+            'name' => 'Taj Mahal',
+        ]);
+    
+        Building::create([
+            'name' => 'Qutub Minar',
+        ]);
+    
+        Building::create([
+            'name' => 'India Gate',
+        ]);
     }
+    
 }

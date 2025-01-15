@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('flats', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('building_id')->constrained();
-            $table->foreignId('user_id')->nullable()->constrained();
-            $table->string('name');
-            $table->float('rent')->default(0);
+            $table->foreignId('user_id')->constrained();
+            $table->string('role');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('flats');
+        Schema::dropIfExists('roles');
     }
 };

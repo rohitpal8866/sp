@@ -52,7 +52,7 @@
                                             <th scope="row">{{ $loop->iteration }}</th>
                                             <td class="text-bold-500">{{ $data->name }}</td>
                                             <td>{{ $data->rent }}</td>
-                                            <td>-</td>
+                                            <td>{{ $data->user->name }}</td>
                                             <td>
                                                 <a href=""></a>
                                                 <a href="javascript:void(0)" onclick="editBuilding({{ $data->id }})"
