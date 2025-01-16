@@ -39,6 +39,12 @@
             </footer>
         </div>
     </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="d-none bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <img src="{{ asset('assets/images/loading.gif') }}" alt="Loading..." style="width: 100px; height: 100px;">
+    </div>
+
     <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js')}}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js')}}"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

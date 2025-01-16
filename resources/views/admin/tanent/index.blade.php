@@ -50,7 +50,7 @@
                                         <tr>
                                             <th scope="row">{{ $loop->iteration }}</th>
                                             <td class="text-bold-500">{{ $item->name }}</td>
-                                            <td>{{ $item->flat->name }}</td>
+                                            <td>{{ $item->flat ? $item->flat->name : '-' }}</td>
                                             <td> <a href="https://wa.me/{{ $item->phone }}">{{ $item->phone }}</a> </td>
                                             <td>
                                                 <a href="javascript:void(0)" onclick="editRecord({{ $item->id }})" class="btn btn-sm btn-warning">

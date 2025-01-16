@@ -70,7 +70,7 @@ function successAlert(message) {
         title: 'Success',
         text: message,
         showConfirmButton: false,
-        timer: 1500,
+        timer: 3000,
         position: "top-end",
     });
 }
@@ -83,5 +83,50 @@ function errorAlert(message) {
         showConfirmButton: false,
         timer: 1500,
         position: "top-end",
+    });
+}
+
+// Add Loading Animation
+document.addEventListener("DOMContentLoaded", function () {
+    const loadingOverlay = document.getElementById('loading-overlay');
+
+    // Show spinner on form submission
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', () => {
+            loadingOverlay.classList.remove('d-none');
+        });
+    });
+
+    // Hide spinner on window unload (optional)
+    window.addEventListener('beforeunload', () => {
+        loadingOverlay.classList.remove('d-none');
+    });
+});
+
+
+$(document).ajaxStart(function () {
+    $('#loading-overlay').removeClass('d-none');
+}).ajaxStop(function () {
+    $('#loading-overlay').addClass('d-none');
+});
+
+
+function getUpdateGit(){
+    $.ajax({
+        url: 'git-pull',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            
+            successAlert(response.message);
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+            
+        },
+        error: function(xhr) {
+            errorAlert(xhr.responseJSON.message);
+            console.log(xhr);
+        }
     });
 }

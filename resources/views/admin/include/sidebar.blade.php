@@ -43,8 +43,8 @@
                         </li>
 
                         <li class="sidebar-title">Raise Support</li>
-                        <li class="sidebar-item  ">
-                            <a href="{{route('git-pull')}}" class="sidebar-link" target="_blank">
+                        <li class="sidebar-item">
+                            <a onclick="getUpdateGit()" class="sidebar-link" style="cursor: pointer;" target="_blank">
                                 <i class="bi bi-life-preserver"></i>
                                 <span>Get Updatee</span>
                             </a>
@@ -55,3 +55,4 @@
                 <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
             </div>
         </div>
+
