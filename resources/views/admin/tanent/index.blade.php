@@ -172,11 +172,11 @@
 @push('scripts')
     <script>
 
-        function getFlat(id) {
+        function getFlat(building_id , id = null) {
             $.ajax({
                 url: '{{ route('admin.tenant.getFlats') }}', // Route to handle the AJAX request
                 type: 'GET',
-                data: { building_id: id },
+                data: { building_id: building_id },
                 success: function(response) {
                     $('#flat').empty();
                     $('#flat').append('<option value="">Select Flat</option>');
@@ -185,7 +185,9 @@
                         response.flats.forEach(function(flat) {
                             $('#flat').append('<option value="' + flat.id + '">' + flat.name + '</option>');
                         });
-
+                        if(id){
+                            $('#flat').val(id);
+                        }
                     } else {
                         $('#flat').append('<option value="">No Flats Available</option>');
                     }
@@ -234,8 +236,9 @@
                     $('#name').val(response.name);
                     $('#phone').val(response.phone);
                     $('#building').val(response.flat.building_id);
-                    getFlat(response.flat.building_id);                  
+                    getFlat(response.flat.building_id, response.flat.id);                  
 
+                    var flatId = response.flat.id;
                     // Set form action for updating the tenant
                     $('#tenantForm').attr('action', '{{ route('admin.tenant.update', ':id') }}'.replace(':id', response.id));
 

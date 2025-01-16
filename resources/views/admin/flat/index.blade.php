@@ -127,6 +127,26 @@
                             </div>
                         @enderror
                     </div>
+
+                    <!-- <div class="mb-3">
+                        <label for="tenant" class="form-label">Tenant</label>
+                        <div class="form-group has-icon-left">
+                            <div class="position-relative">
+                                <input type="text" name="tenant" id="tenant" class="form-control @error('tenant') is-invalid @enderror" placeholder="Enter Flat rent" value="{{ old('tenant') }}" required>
+                                <div class="form-control-icon">
+                                <i class="bi bi-person"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        @error('tenant')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div> -->
+
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

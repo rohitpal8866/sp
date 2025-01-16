@@ -78,7 +78,10 @@ class TenantController extends Controller
             return response()->json(['message'=> 'Flat is already assigned to another tenant'], 422);
         }
 
-        $user->flat()->associate($flat);
+        if($flat->user_id != $user->id && $flat->user_id == null){
+            $user->flat()->associate($flat);
+        }
+        
         $user->save();
 
         
