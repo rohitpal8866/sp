@@ -34,3 +34,9 @@
     right: 0;
     left: auto;
 }
+
+
+@page {
+    size: A4 !important;
+    margin: 20mm;
+}

@@ -130,3 +130,16 @@ function getUpdateGit(){
         }
     });
 }
+
+
+$('input[name="checkAll"]').on('change' , function(){
+    if(this.checked){
+        $('input[type="checkbox"]').each(function(){
+            this.checked = true;
+        });
+    }else{
+        $('input[type="checkbox"]').each(function(){
+            this.checked = false;
+        });
+    }
+});

@@ -48,46 +48,56 @@
                                 <option value="11" {{ isset($month) && $month == 11 ? 'selected' : '' }}>November</option>
                                 <option value="12" {{ isset($month) && $month == 12 ? 'selected' : '' }}>December</option>
                             </select>
+                            <select name="year" class="form-select form-select-sm" id="year">
+                                <option value="0">Select Year</option>
+                                @for ($i = $maxYear; $i >= $minYear; $i--)
+                                    <option value="{{ $i }}" {{ isset($year) && $year == $i ? 'selected' : '' }}>
+                                        {{ $i }}
+                                    </option>
+                                @endfor
+                            </select>
                             <button type="submit" onclick="this.form.submit()" class="btn btn-primary btn-sm">Filter</button>
+                            <a href="{{ Route('admin.bill.index') }}" class="btn btn-primary btn-sm"><i class="bi bi-arrow-clockwise"></i></a>
                         </form>
                         <button data-bs-toggle="modal" data-bs-target="#createTenant" class="btn btn-primary btn-sm">Generate Bill</button>
                         <button onclick="billPrint()" class="btn btn-primary btn-sm">Bill Print</button>
                     </div>
                     <div class="card-content">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead>
-                                    <tr>
-                                        <th scope="col" style="width: 3%;">#</th>
-                                        <th scope="col" style="width: 10%;">Date</th>
-                                        <th scope="col" style="width: 25%;">Flat</th>
-                                        <th scope="col" style="width: 15%;">Rent</th>
-                                        <th scope="col" style="width: 15%;">Light Bill</th>
-                                        <th scope="col" style="width: 15%;">Maintenance</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <form action="{{ Route('admin.bill.pdf-print') }}" id="selectData" method="post">
-                                        @forelse($data as $item)
-                                            <tr>
-                                                <td>
-                                                <input class="form-check-input" type="checkbox" value="{{ $item->id }}" name="select_bills[]">
-                                                </td>
-                                                <td>{{ $item->created_at->format('d-M-Y') }}</td>
-                                                <td class="text-bold-500">{{ $item->flat->name }}</td>
-                                                <td><input type="text" class="form-control amountBill" value="{{ $item->rent }}" name="rent" data-id="{{ $item->id }}"></td>
-                                                <td><input type="text" class="form-control amountBill" value="{{ $item->light_bill }}" name="light_bill" data-id="{{ $item->id }}"></td>
-                                                <td><input type="text" class="form-control amountBill" value="{{ $item->maintenance }}" name="maintenance" data-id="{{ $item->id }}"></td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="6" class="text-center">No data found</td>
-                                            </tr>
-                                        @endforelse
-                                    </form>
-                                </tbody>
-                            </table>
-                        </div>
+                        <form action="{{ Route('admin.bill.pdf-print') }}" id="selectData" method="post">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" style="width: 3%;"><input type="checkbox" class="form-check-input" id="checkAll" name="checkAll"></th>
+                                            <th scope="col" style="width: 10%;">Date</th>
+                                            <th scope="col" style="width: 25%;">Flat</th>
+                                            <th scope="col" style="width: 15%;">Rent</th>
+                                            <th scope="col" style="width: 15%;">Light Bill</th>
+                                            <th scope="col" style="width: 15%;">Maintenance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        
+                                            @forelse($data as $item)
+                                                <tr>
+                                                    <td>
+                                                    <input class="form-check-input" type="checkbox" value="{{ $item->id }}" name="select_bills[]">
+                                                    </td>
+                                                    <td>{{ \Carbon\Carbon::parse($item->bill_date)->format('d-m-Y') }}</td>
+                                                    <td class="text-bold-500">{{ $item->flat->name }}</td>
+                                                    <td><input type="text" class="form-control amountBill" value="{{ $item->rent }}" name="rent" data-id="{{ $item->id }}"></td>
+                                                    <td><input type="text" class="form-control amountBill" value="{{ $item->light_bill }}" name="light_bill" data-id="{{ $item->id }}"></td>
+                                                    <td><input type="text" class="form-control amountBill" value="{{ $item->maintenance }}" name="maintenance" data-id="{{ $item->id }}"></td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="6" class="text-center">No data found</td>
+                                                </tr>
+                                            @endforelse                                    
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -99,9 +109,32 @@
 @push('scripts')
     <script>
 
-        function billPrint(){
-            var form = $('$selectData').
+        
+
+function billPrint() {
+    var form = $('#selectData').serialize();
+    $.ajax({
+        url: "{{ route('admin.bill.pdf-print') }}",
+        type: 'POST',
+        data: form,
+        xhrFields: {
+            responseType: 'blob' // Handle binary response for the PDF
+        },
+        success: function(response) {
+            var blob = new Blob([response], { type: 'application/pdf' });
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'bills.pdf';
+            link.click();
+            successAlert('PDF generated successfully');
+        },
+        error: function(xhr) {
+            errorAlert(xhr.responseJSON.message);
+            console.log(xhr);
         }
+    });
+}
+
 
         $(".amountBill").on("blur", function() {
             var amount = $(this).val();

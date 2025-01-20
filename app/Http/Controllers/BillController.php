@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bill;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class BillController extends Controller
 {
@@ -12,21 +13,31 @@ class BillController extends Controller
     {
         $search = $request->get("search");
         $month = $request->get("month");
+        $year = $request->get("year");
 
         $data = Bill::when($search, function ($query, $search) {
             return $query->whereHas('flat', function ($query) use ($search) {
                     $query->where('name', 'like', "%{$search}%");
                 });
         })
-        ->when($month, function ($query, $month) {
-            if ($month != '0') {
-                return $query->whereMonth('created_at', $month);
-            }
+        ->when($month && $month !== '0', function ($query) use ($month) {
+            return $query->whereMonth('bill_date', '=', $month);
+        })
+        ->when($year && $year !== '0', function ($query) use ($year) {
+            return $query->whereYear('bill_date', '=', $year);
         })
         ->latest('created_at')
         ->paginate(10);
 
-        return view('admin.bill.index', compact('data','search','month'));
+
+        $minYear = Bill::orderBy('bill_date', 'asc')->value('bill_date'); // Get the earliest bill_date
+        $maxYear = Bill::orderBy('bill_date', 'desc')->value('bill_date'); // Get the latest bill_date
+        
+        // Extract year values
+        $minYear = $minYear ? date('Y', strtotime($minYear)) : date('Y'); // Default to the current year if no data
+        $maxYear = $maxYear ? date('Y', strtotime($maxYear)) : date('Y'); 
+
+        return view('admin.bill.index', compact('data','search','month','minYear','maxYear'));
     }
 
     public function update(Request $request)
@@ -55,18 +66,15 @@ class BillController extends Controller
         ], 200);
     }
 
-    public function pdfprint(Request $request)
-{
-    // Get the selected bills data
-    $selectedBills = json_decode($request->input('selected_bills'), true);
-
-    // Pass the data to the view and generate the PDF
-    $pdf = PDF::loadView('admin.bill.pdf', ['selectedBills' => $selectedBills]);
-
-    // Return the PDF as a download or inline
-    return $pdf->download('bills.pdf');  // For download
-    // return $pdf->stream('bills.pdf');   // For inline view
-}
+    public function billPrint(Request $request)
+    {
+        $selectedBills = $request->input('select_bills', []);
+        $bills = Bill::whereIn('id', $selectedBills)->get();
     
+        $pdf = PDF::loadView('admin.bill.pdf-template', ['bills' => $bills])
+                    ->setPaper('a4', 'portrait'); // A4 size paper
+    
+        return $pdf->download('bills.pdf'); // Forces a PDF download
+    }
     
 }
