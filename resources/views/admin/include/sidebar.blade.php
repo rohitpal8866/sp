@@ -35,6 +35,13 @@
                             </a>
                         </li>
 
+                        <li class="sidebar-item  {{ Str::contains(Request::url(), 'bill') ? 'active' : '' }}">
+                            <a href="{{ route('admin.bill.index')}}" class='sidebar-link'>
+                                <i class="bi bi-grid-fill"></i>
+                                <span>Bills</span>
+                            </a>
+                        </li>
+
                         <li class="sidebar-item  {{ Str::contains(Request::url(), 'account-configuration') ? 'active' : '' }}">
                             <a href="{{ route('admin.siteconfig.index')}}" class='sidebar-link'>
                                 <i class="bi bi-grid-fill"></i>

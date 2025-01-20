@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BillController;
 use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\FlatController;
 use App\Http\Controllers\GeneralController;
@@ -104,6 +105,17 @@ Route::group([ 'as' => 'admin.'], function () {
 
     });
 
+    // Bills
+    Route::group(['prefix'=> 'bill' , 'as' => 'bill.'], function () {
+        Route::get('/', [BillController::class,'index'])->name('index');
+        Route::post('/update', [BillController::class,'update'])->name('update');
+        Route::get('/pdf-print', [BillController::class,'pdfprint'])->name('pdf-print');
+    });
+
+    // Payment
+    Route::group(['prefix'=> 'payment','as'=> 'payment.'], function () {
+        Route::get('/', [BillController::class,'store'])->name('store');
+    });
     // WebSite Configuration
     Route::group(['prefix'=> 'account-configuration' , 'as' => 'siteconfig.'], function () {
         Route::get('/', [SiteConfigurationController::class,'index'])->name('index');

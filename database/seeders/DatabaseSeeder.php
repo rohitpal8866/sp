@@ -89,5 +89,6 @@ class DatabaseSeeder extends Seeder
         $this->call(BuildingSeeder::class);
         $this->call(FlatSeeder::class);
         $this->call(RolesSeeder::class);
+        $this->call(BillSeeder::class);
     }
 }

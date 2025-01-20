@@ -17,4 +17,8 @@ class Flat extends Model
     public function user(){
         return $this->belongsTo(User::class,'user_id');
     }
+
+    public function bills(){
+        return $this->hasMany(Bill::class,'flat_id');
+    }
 }
