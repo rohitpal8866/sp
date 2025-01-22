@@ -29,7 +29,7 @@ class FlatController extends Controller
         $flat = Flat::create($request->all());
 
         return response()->json([
-            'message' => 'Building has been added successfully.',
+            'message' => 'Flat has been added successfully.',
             'flat' => $flat
         ], 200);
     }
