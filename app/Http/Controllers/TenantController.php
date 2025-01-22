@@ -24,20 +24,36 @@ class TenantController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'building_name' => 'required|string|max:255|unique:buildings,name',
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|numeric',
+            'flat' => 'required|exists:flats,id',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['message' => $validator->errors()->first()], 422);
         }
 
-        $building = new Building();
-        $building->name = $request->building_name;
-        $building->save();
+        $user = User::create([
+            'name' => $request->name,
+            'phone'=> $request->phone,
+        ]);
 
+        $flat = Flat::findOrFail($request->flat);
+
+        if($flat->user_id != null && $flat->user_id != $user->id){
+            return response()->json(['message'=> 'Flat is already rented.'], 422);
+        }
+
+        if($flat->user_id != $user->id && $flat->user_id == null){
+            $user->flat()->associate($flat);
+        }
+        
+        $user->save();
+
+        
         return response()->json([
-            'message' => 'Building has been added successfully.',
-            'building' => $building
+            'message' => 'Tenant has been updated successfully.',
+            'data' => $user
         ], 200);
     }
 
@@ -87,7 +103,7 @@ class TenantController extends Controller
         
         return response()->json([
             'message' => 'Tenant has been updated successfully.',
-            'building' => $user
+            'data' => $user
         ], 200);
     }
 

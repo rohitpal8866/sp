@@ -29,10 +29,15 @@
         <div class="row" id="table-hover-row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title">Bill List</h4>
-                        <form method="GET" action="{{ route('admin.bill.index') }}" class="d-flex">
+                    <div class="card-header d-flex justify-content-between align-items-center ">
+                        <form method="GET" action="{{ route('admin.bill.index') }}" class="d-flex gap-2">
                             <input type="text" name="search" class="form-control form-control-sm me-2" placeholder="Search..."  value="{{ isset($search) ? $search : '' }}"/>
+                            <select class="form-select form-select-sm" name="building" id="building">
+                                <option value="0">Select Building</option>
+                                @foreach ($buildings as $building)
+                                    <option value="{{ $building->id }}" {{ isset($building_id) && $building_id == $building->id ? 'selected' : '' }}>{{ $building->name }}</option>
+                                @endforeach
+                            </select>
                             <select class="form-select form-select-sm" name="month">
                                 <option value="0">Select Month</option>
                                 <option value="1" {{ isset($month) && $month == 1 ? 'selected' : '' }}>January</option>
@@ -56,11 +61,17 @@
                                     </option>
                                 @endfor
                             </select>
-                            <button type="submit" onclick="this.form.submit()" class="btn btn-primary btn-sm">Filter</button>
+                            <button type="submit" onclick="this.form.submit()" class="btn btn-primary btn-sm ml-1 ">Filter</button>
                             <a href="{{ Route('admin.bill.index') }}" class="btn btn-primary btn-sm"><i class="bi bi-arrow-clockwise"></i></a>
                         </form>
-                        <button data-bs-toggle="modal" data-bs-target="#createTenant" class="btn btn-primary btn-sm">Generate Bill</button>
-                        <button onclick="billPrint()" class="btn btn-primary btn-sm">Bill Print</button>
+                        <div class="d-flex gap-2">
+                            <button data-bs-toggle="modal" data-bs-target="#createTenant" class="btn btn-success btn-sm">
+                                Generate Bill
+                            </button>
+                            <button onclick="billPrint()" class="btn btn-info btn-sm">
+                                Bill Print
+                            </button>
+                        </div>
                     </div>
                     <div class="card-content">
                         <form action="{{ Route('admin.bill.pdf-print') }}" id="selectData" method="post">

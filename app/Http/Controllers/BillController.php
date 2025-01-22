@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bill;
+use App\Models\Building;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -15,10 +16,16 @@ class BillController extends Controller
         $search = $request->get("search");
         $month = $request->get("month");
         $year = $request->get("year");
+        $building_id = $request->get("building") ?? 1;
 
         $data = Bill::when($search, function ($query, $search) {
             return $query->whereHas('flat', function ($query) use ($search) {
                     $query->where('name', 'like', "%{$search}%");
+                });
+        })
+        ->when($building_id, function ($query, $building_id) {
+            return $query->whereHas('flat', function ($query) use ($building_id) {
+                    $query->where('building_id', $building_id);
                 });
         })
         ->when($month && $month !== '0', function ($query) use ($month) {
@@ -30,7 +37,7 @@ class BillController extends Controller
         ->latest('created_at')
         ->paginate(10);
 
-
+        $buildings = Building::all();
         $minYear = Bill::orderBy('bill_date', 'asc')->value('bill_date'); // Get the earliest bill_date
         $maxYear = Bill::orderBy('bill_date', 'desc')->value('bill_date'); // Get the latest bill_date
         
@@ -38,7 +45,7 @@ class BillController extends Controller
         $minYear = $minYear ? date('Y', strtotime($minYear)) : date('Y'); // Default to the current year if no data
         $maxYear = $maxYear ? date('Y', strtotime($maxYear)) : date('Y'); 
 
-        return view('admin.bill.index', compact('data','search','month','minYear','maxYear'));
+        return view('admin.bill.index', compact('data','search','month','minYear','maxYear','buildings','building_id'));
     }
 
     public function update(Request $request)
