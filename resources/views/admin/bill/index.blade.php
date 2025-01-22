@@ -85,6 +85,8 @@
                                             <th scope="col" style="width: 15%;">Rent</th>
                                             <th scope="col" style="width: 15%;">Light Bill</th>
                                             <th scope="col" style="width: 15%;">Maintenance</th>
+                                            <th scope="col" style="width: 15%;">Other</th>
+                                            <th scope="col" style="width: 15%;">Notes</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -99,6 +101,8 @@
                                                     <td><input type="text" class="form-control amountBill" value="{{ $item->rent }}" name="rent" data-id="{{ $item->id }}"></td>
                                                     <td><input type="text" class="form-control amountBill" value="{{ $item->light_bill }}" name="light_bill" data-id="{{ $item->id }}"></td>
                                                     <td><input type="text" class="form-control amountBill" value="{{ $item->maintenance }}" name="maintenance" data-id="{{ $item->id }}"></td>
+                                                    <td><input type="text" class="form-control amountBill" value="{{ $item->other ?? 0 }}" name="other" data-id="{{ $item->id }}"></td>
+                                                    <td><a class="btn btn-sm btn-primary" onclick="addNotes({{ $item->id }}, '{{ $item->notes }}')"> <i class="bi bi-pencil-square"></i></a></td>
                                                 </tr>
                                             @empty
                                                 <tr>
@@ -115,12 +119,86 @@
         </div>
     </section>
 </div>
+
+
+
+<div class="modal fade" id="addNotes" tabindex="-1" aria-labelledby="notesModalLabel">
+    <div class="modal-dialog d-flex align-items-center justify-content-center" style="max-width: 600px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Add Notes</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="notesForm" action="{{ route('admin.bill.update') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="id" id="bill_id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes</label>
+                        <div class="form-group has-icon-left">
+                            <div class="position-relative">
+                                <textarea
+                                    name="notes"
+                                    id="notes"
+                                    class="form-control @error('notes') is-invalid @enderror"
+                                    placeholder="Enter Notes"
+                                    required
+                                ></textarea>
+                                <div class="form-control-icon">
+                                    <i class="bi bi-pencil"></i>
+                                </div>
+                            </div>
+                        </div>
+                        @error('notes')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
 @endsection
 
 @push('scripts')
     <script>
 
-        
+function addNotes(id, notes) {
+        $('#addNotes').modal('show');
+        $('#bill_id').val(id);
+        $('#notes').val(notes);
+    }
+
+
+    $(document).ready(function () {
+        $('#notesForm').on('submit', function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            let formData = $(this).serialize(); // Serialize the form data
+
+            $.ajax({
+                url: $(this).attr('action'), // Form action URL
+                method: 'POST',
+                data: formData,
+                success: function (response) {
+                    $('#addNotes').modal('hide'); // Close the modal
+                    successAlert(response.message || 'The notes were successfully updated!');
+                },
+                error: function (xhr) {
+                    console.error('Error:', xhr.responseText);
+                },
+            });
+        });
+    });
 
 function billPrint() {
     var form = $('#selectData').serialize();
@@ -163,8 +241,8 @@ function billPrint() {
                     _token: '{{ csrf_token() }}'  // CSRF token for security, if needed
                 },
                 success: function(response) {
-                    successAlert(response.message);
-                    setTimeout(() => location.reload(), 1500);
+                    // successAlert(response.message);
+                    // setTimeout(() => location.reload(), 1500);
                 },
                 error: function(xhr, status, error) {
                     errorAlert(xhr.responseJSON.message);

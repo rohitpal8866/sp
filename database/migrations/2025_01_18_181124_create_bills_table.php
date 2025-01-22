@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('maintenance', 10, 2)->nullable(); // Maintenance bill amount
             $table->decimal('light_bill', 10, 2)->nullable(); // Light bill amount
             $table->date('bill_date'); // Date of the bill
+            $table->decimal('other', 10, 2)->nullable();
             $table->boolean('paid')->default(false);
             $table->text('notes')->nullable();
             $table->timestamps();

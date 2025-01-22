@@ -13,6 +13,9 @@ class BillController extends Controller
     public function index(Request $request)
     {
       
+        // $this->billPrint($request);
+
+        // dd('asd');
         $search = $request->get("search");
         $month = $request->get("month");
         $year = $request->get("year");
@@ -63,10 +66,15 @@ class BillController extends Controller
             $record->rent = $request->amount;
         }elseif($field == 'light_bill'){
             $record->light_bill = $request->amount;
-        }else{
+        }elseif($field == 'other'){
+            $record->other = $request->amount;
+        }elseif($field == 'maintenance'){
             $record->maintenance = $request->amount;
-        }    
+        }  
 
+        if($request->has('notes')){
+            $record->notes = $request->notes;
+        }
         $record->save();
         return response()->json([
             'message' => 'Record updated successfully',
@@ -76,12 +84,20 @@ class BillController extends Controller
 
     public function billPrint(Request $request)
     {
-        $selectedBills = $request->input('select_bills', []);
-        $bills = Bill::whereIn('id', $selectedBills)->get();
+        // $selectedBills = $request->input('select_bills', []);
+        // $bills = Bill::whereIn('id', $selectedBills)->get();
+
+        $bills = Bill::whereIn('id',[1,2,3,4,5,6])->get();
     
-        $pdf = PDF::loadView('admin.bill.pdf-template', ['bills' => $bills])
+        $pdf = PDF::loadView('admin.bill.pdf.pdf-template', ['bills' => $bills])
                     ->setPaper('a4', 'portrait'); // A4 size paper
     
+        $filePath = storage_path('app/temp/test.pdf');
+    
+        $pdf->save($filePath);
+        dd('asd');            
+
+
         return $pdf->download('bills.pdf'); // Forces a PDF download
     }
     
