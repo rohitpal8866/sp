@@ -74,6 +74,10 @@
                             </table>
                         </div>
                     </div>
+                    <div class="card-footer">
+                        <!-- Display pagination links -->
+                        {{ $flat->links('pagination::bootstrap-5') }}
+                    </div>
                 </div>
             </div>
         </div>

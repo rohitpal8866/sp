@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 class BuildingController extends Controller
 {
     public function index(){
-        $building = Building::latest("created_at")->paginate(10);
+        $building = Building::latest("created_at")->paginate(8);
         return view('admin.building.index' ,compact('building'));
     }
 

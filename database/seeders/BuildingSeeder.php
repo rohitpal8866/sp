@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Building;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Faker\Factory as Faker;
 
 class BuildingSeeder extends Seeder
 {
@@ -13,25 +14,14 @@ class BuildingSeeder extends Seeder
      */
     public function run(): void
     {
-        Building::create([
-            'name' => 'Shahajahan Palace',
-        ]);
-    
-        Building::create([
-            'name' => 'Red Fort',
-        ]);
-    
-        Building::create([
-            'name' => 'Taj Mahal',
-        ]);
-    
-        Building::create([
-            'name' => 'Qutub Minar',
-        ]);
-    
-        Building::create([
-            'name' => 'India Gate',
-        ]);
+        $faker = Faker::create();
+
+        $max = rand(5, 20);
+        for ($i = 0; $i < $max; $i++) {
+            Building::create([
+                'name' => $faker->company(),
+            ]);
+        }
     }
     
 }

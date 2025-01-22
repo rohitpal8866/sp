@@ -13,9 +13,9 @@ class BillController extends Controller
     public function index(Request $request)
     {
       
-        $this->billPrint($request);
+        // $this->billPrint($request);
 
-        dd('asd');
+        // dd('asd');
         $search = $request->get("search");
         $month = $request->get("month");
         $year = $request->get("year");
@@ -38,7 +38,7 @@ class BillController extends Controller
             return $query->whereYear('bill_date', '=', $year);
         })
         ->latest('created_at')
-        ->paginate(10);
+        ->paginate(8);
 
         $buildings = Building::all();
         $minYear = Bill::orderBy('bill_date', 'asc')->value('bill_date'); // Get the earliest bill_date
@@ -48,7 +48,7 @@ class BillController extends Controller
         $minYear = $minYear ? date('Y', strtotime($minYear)) : date('Y'); // Default to the current year if no data
         $maxYear = $maxYear ? date('Y', strtotime($maxYear)) : date('Y'); 
 
-        return view('admin.bill.index', compact('data','search','month','minYear','maxYear','buildings','building_id'));
+        return view('admin.bill.index', compact('data','search','month','year','minYear','maxYear','buildings','building_id'));
     }
 
     public function update(Request $request)
@@ -84,21 +84,66 @@ class BillController extends Controller
 
     public function billPrint(Request $request)
     {
-        // $selectedBills = $request->input('select_bills', []);
-        // $bills = Bill::whereIn('id', $selectedBills)->get();
+        $selectedBills = $request->input('select_bills', []);
+        $bills = Bill::whereIn('id', $selectedBills)->get();
 
-        $bills = Bill::whereIn('id',[1,2,3,4,5,6])->get();
+        // $bills = Bill::whereIn('id', [1,2,3,4])->get();
+
+        $chunks = $bills->chunk(2);
     
-        $pdf = PDF::loadView('admin.bill.pdf.pdf-template', ['bills' => $bills])
+        $pdf = PDF::loadView('admin.bill.pdf.pdf-template', ['data' => $chunks])
                     ->setPaper('a4', 'portrait'); // A4 size paper
     
-        $filePath = storage_path('app/temp/test.pdf');
-    
-        $pdf->save($filePath);
-        dd('asd');            
+        // $filePath = storage_path('app/temp/test.pdf');
+
+        // $pdf->save($filePath);
+        // dd('asd');        
 
 
         return $pdf->download('bills.pdf'); // Forces a PDF download
+    }
+
+    public function generateBill($id){
+        $building = Building::find($id);
+
+        if (!$building) {
+            return response()->json([
+                'message' => 'Building not found.',
+            ], 404);
+        }
+    
+        $flats = $building->flats;
+    
+        if ($flats->isEmpty()) {
+            return response()->json([
+                'message' => 'No flats found for the building.',
+            ], 404);
+        }
+    
+        try {
+            foreach ($flats as $flat) {
+                $lastMonthBill = $flat->bills()->orderBy('bill_date', 'desc')->first();
+    
+                Bill::create([
+                    'flat_id' => $flat->id,
+                    'rent' => $flat->rent,
+                    'maintenance' => $lastMonthBill->maintenance ?? 0,
+                    'light_bill' => $lastMonthBill->light_bill ?? 0,
+                    'bill_date' => Carbon::today(),
+                ]);
+            }
+    
+            return response()->json([
+                'message' => 'Bills generated successfully.',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while generating bills.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+        
+
     }
     
 }

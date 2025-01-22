@@ -40,6 +40,7 @@
                                     <tr>
                                         <th scope="col">#</th>
                                         <th>NAME</th>
+                                        <th>FLATS</th>
                                         <th>ACTION</th>
                                     </tr>
                                 </thead>
@@ -48,6 +49,7 @@
                                         <tr>
                                             <th scope="row">{{ $loop->iteration }}</th>
                                             <td class="text-bold-500">{{ $data->name }}</td>
+                                            <td>{{ $data->flats->count() }}</td>
                                             <td>
                                                 <a href="{{Route('admin.flat', $data->id)}}" class="btn btn-sm" title="Flats">
                                                     <i class="bi bi-house"></i>
@@ -68,6 +70,10 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                    <div class="card-footer">
+                        <!-- Display pagination links -->
+                        {{ $building->links('pagination::bootstrap-5') }}
                     </div>
                 </div>
             </div>

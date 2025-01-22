@@ -123,6 +123,7 @@
             success: function(response) {
                 // Handle the response (e.g., display success message)
                 successAlert('Settings saved successfully!');
+                location.reload();
             },
             error: function(xhr, status, error) {
                 errorAlert(xhr.responseJSON.message);

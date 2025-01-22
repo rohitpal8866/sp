@@ -12,7 +12,7 @@ class TenantController extends Controller
     public function index(){
         $data = User::whereHas('roles', function ($query) {
             $query->where('role', 'tenant');
-        })->paginate(10);
+        })->paginate(8);
 
         return view('admin.tanent.index' ,compact('data'));
     }

@@ -21,9 +21,10 @@ class BillSeeder extends Seeder
         foreach ($flats as $flat) {
             $flat->bills()->create([
                 'flat_id' => $flat->id,
-                'rent' => $faker->randomFloat(2, 100, 1000), // Random rent between 100 and 1000
-                'maintenance' => $faker->randomFloat(2, 50, 500), // Random maintenance charge between 50 and 500
-                'light_bill' => $faker->randomFloat(2, 20, 300), // Random light bill between 20 and 300
+                'rent' => $flat->rent, // Random rent between 100 and 1000
+                'maintenance' => round($faker->randomFloat(2, 50, 1000)), // Random maintenance charge between 50 and 500
+                'light_bill' => round($faker->randomFloat(2, 500, 2000)), // Random light bill between 20 and 300
+                'other' => round($faker->randomFloat(2, 5000, 10000)), // Random other charges between 20 and 300
                 'bill_date' => Carbon::today()->subDays(rand(0, 1825)), // Random date for the bill
                 'paid' => $faker->boolean(70), // 70% chance that the bill is paid (true or false)
                 'notes' => $faker->text(100), // Random notes with a max length of 100 characters

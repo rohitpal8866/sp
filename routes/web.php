@@ -110,6 +110,7 @@ Route::group([ 'as' => 'admin.'], function () {
         Route::get('/', [BillController::class,'index'])->name('index');
         Route::post('/update', [BillController::class,'update'])->name('update');
         Route::post('/pdf-print', [BillController::class,'billPrint'])->name('pdf-print');
+        Route::get('/generate-bill/{id}', [BillController::class,'generateBill'])->name('generate-bill');
     });
 
     // Payment

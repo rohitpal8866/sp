@@ -70,6 +70,10 @@
                             </table>
                         </div>
                     </div>
+                    <div class="card-footer">
+                        <!-- Display pagination links -->
+                        {{ $data->links('pagination::bootstrap-5') }}
+                    </div>
                 </div>
             </div>
         </div>

@@ -10,7 +10,7 @@ class FlatController extends Controller
 {
     public function index($id){
 
-        $flat = Flat::orderBy("id","desc")->where("building_id",$id)->paginate(10);
+        $flat = Flat::orderBy("id","desc")->where("building_id",$id)->paginate(8);
         return view("admin.flat.index", compact("flat" , 'id'));
     }
 

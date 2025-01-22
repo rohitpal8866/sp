@@ -37,6 +37,10 @@ class SiteConfigurationController extends Controller
             config(['app.logo' => $logoPath]);
         }
     
-        return redirect()->back()->with('success', 'Site configuration updated successfully!');
+        return response()->json([
+            'message' => 'Record updated successfully'
+        ], 200);
+
+        // return redirect()->back()->with('success', 'Site configuration updated successfully!');
     }
 }

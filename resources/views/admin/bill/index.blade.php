@@ -30,8 +30,9 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center ">
-                        <form method="GET" action="{{ route('admin.bill.index') }}" class="d-flex gap-2">
-                            <input type="text" name="search" class="form-control form-control-sm me-2" placeholder="Search..."  value="{{ isset($search) ? $search : '' }}"/>
+                        <form method="GET" id="filterForm" action="{{ route('admin.bill.index') }}" class="d-flex gap-2">
+                            <input type="text" name="search" class="form-control form-control-sm me-2"
+                                placeholder="Search..." value="{{ isset($search) ? $search : '' }}" />
                             <select class="form-select form-select-sm" name="building" id="building">
                                 <option value="0">Select Building</option>
                                 @foreach ($buildings as $building)
@@ -61,11 +62,16 @@
                                     </option>
                                 @endfor
                             </select>
-                            <button type="submit" onclick="this.form.submit()" class="btn btn-primary btn-sm ml-1 ">Filter</button>
-                            <a href="{{ Route('admin.bill.index') }}" class="btn btn-primary btn-sm"><i class="bi bi-arrow-clockwise"></i></a>
+                            <button type="submit" onclick="this.form.submit()"
+                                class="btn btn-primary btn-sm ml-1 ">Filter</button>
+                            <a href="{{ Route('admin.bill.index') }}" class="btn btn-primary btn-sm"><i
+                                    class="bi bi-arrow-clockwise"></i></a>
                         </form>
                         <div class="d-flex gap-2">
-                            <button data-bs-toggle="modal" data-bs-target="#createTenant" class="btn btn-success btn-sm">
+                            <button id="removeSelected" class="btn btn-danger btn-sm d-none">
+                                Remove
+                            </button>
+                            <button onclick="generateBill()" class="btn btn-success btn-sm">
                                 Generate Bill
                             </button>
                             <button onclick="billPrint()" class="btn btn-info btn-sm">
@@ -79,7 +85,8 @@
                                 <table class="table table-hover mb-0">
                                     <thead>
                                         <tr>
-                                            <th scope="col" style="width: 3%;"><input type="checkbox" class="form-check-input" id="checkAll" name="checkAll"></th>
+                                            <th scope="col" style="width: 3%;"><input type="checkbox"
+                                                    class="form-check-input" id="checkAll" name="checkAll"></th>
                                             <th scope="col" style="width: 10%;">Date</th>
                                             <th scope="col" style="width: 25%;">Flat</th>
                                             <th scope="col" style="width: 15%;">Rent</th>
@@ -90,29 +97,43 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        
-                                            @forelse($data as $item)
-                                                <tr>
-                                                    <td>
-                                                    <input class="form-check-input" type="checkbox" value="{{ $item->id }}" name="select_bills[]">
-                                                    </td>
-                                                    <td>{{ \Carbon\Carbon::parse($item->bill_date)->format('d-m-Y') }}</td>
-                                                    <td class="text-bold-500">{{ $item->flat->name }}</td>
-                                                    <td><input type="text" class="form-control amountBill" value="{{ $item->rent }}" name="rent" data-id="{{ $item->id }}"></td>
-                                                    <td><input type="text" class="form-control amountBill" value="{{ $item->light_bill }}" name="light_bill" data-id="{{ $item->id }}"></td>
-                                                    <td><input type="text" class="form-control amountBill" value="{{ $item->maintenance }}" name="maintenance" data-id="{{ $item->id }}"></td>
-                                                    <td><input type="text" class="form-control amountBill" value="{{ $item->other ?? 0 }}" name="other" data-id="{{ $item->id }}"></td>
-                                                    <td><a class="btn btn-sm btn-primary" onclick="addNotes({{ $item->id }}, '{{ $item->notes }}')"> <i class="bi bi-pencil-square"></i></a></td>
-                                                </tr>
-                                            @empty
-                                                <tr>
-                                                    <td colspan="6" class="text-center">No data found</td>
-                                                </tr>
-                                            @endforelse                                    
+
+                                        @forelse($data as $item)
+                                            <tr>
+                                                <td>
+                                                    <input class="form-check-input bill-checkbox" type="checkbox" value="{{ $item->id }}" name="select_bills[]">
+                                                </td>
+                                                <td>{{ \Carbon\Carbon::parse($item->bill_date)->format('d-m-Y') }}</td>
+                                                <td class="text-bold-500">{{ $item->flat->name }}</td>
+                                                <td><input type="text" class="form-control amountBill"
+                                                        value="{{ $item->rent }}" name="rent" data-id="{{ $item->id }}">
+                                                </td>
+                                                <td><input type="text" class="form-control amountBill"
+                                                        value="{{ $item->light_bill }}" name="light_bill"
+                                                        data-id="{{ $item->id }}"></td>
+                                                <td><input type="text" class="form-control amountBill"
+                                                        value="{{ $item->maintenance }}" name="maintenance"
+                                                        data-id="{{ $item->id }}"></td>
+                                                <td><input type="text" class="form-control amountBill"
+                                                        value="{{ $item->other ?? 0 }}" name="other"
+                                                        data-id="{{ $item->id }}"></td>
+                                                <td><a class="btn btn-sm btn-primary"
+                                                        onclick="addNotes({{ $item->id }}, '{{ $item->notes }}')"> <i
+                                                            class="bi bi-pencil-square"></i></a></td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="8" class="text-center">No data found</td>
+                                            </tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>
                         </form>
+                    </div>
+                    <div class="card-footer">
+                        <!-- Display pagination links -->
+                        {{ $data->Appends(['search' => $search, 'building' => $building_id, 'month' => $month, 'year' => $year])->links('pagination::bootstrap-5') }}
                     </div>
                 </div>
             </div>
@@ -137,13 +158,9 @@
                         <label for="notes" class="form-label">Notes</label>
                         <div class="form-group has-icon-left">
                             <div class="position-relative">
-                                <textarea
-                                    name="notes"
-                                    id="notes"
-                                    class="form-control @error('notes') is-invalid @enderror"
-                                    placeholder="Enter Notes"
-                                    required
-                                ></textarea>
+                                <textarea name="notes" id="notes"
+                                    class="form-control @error('notes') is-invalid @enderror" placeholder="Enter Notes"
+                                    required></textarea>
                                 <div class="form-control-icon">
                                     <i class="bi bi-pencil"></i>
                                 </div>
@@ -172,60 +189,127 @@
 @push('scripts')
     <script>
 
-function addNotes(id, notes) {
-        $('#addNotes').modal('show');
-        $('#bill_id').val(id);
-        $('#notes').val(notes);
-    }
 
+const selectedBills = JSON.parse(localStorage.getItem('selectedBills')) || [];
 
-    $(document).ready(function () {
-        $('#notesForm').on('submit', function (event) {
-            event.preventDefault(); // Prevent default form submission
+if (selectedBills.length > 0) {
 
-            let formData = $(this).serialize(); // Serialize the form data
+    $('#removeSelected').removeClass('d-none');
 
-            $.ajax({
-                url: $(this).attr('action'), // Form action URL
-                method: 'POST',
-                data: formData,
-                success: function (response) {
-                    $('#addNotes').modal('hide'); // Close the modal
-                    successAlert(response.message || 'The notes were successfully updated!');
-                },
-                error: function (xhr) {
-                    console.error('Error:', xhr.responseText);
-                },
-            });
-        });
-    });
-
-function billPrint() {
-    var form = $('#selectData').serialize();
-    $.ajax({
-        url: "{{ route('admin.bill.pdf-print') }}",
-        type: 'POST',
-        data: form,
-        xhrFields: {
-            responseType: 'blob' // Handle binary response for the PDF
-        },
-        success: function(response) {
-            var blob = new Blob([response], { type: 'application/pdf' });
-            var link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = 'bills.pdf';
-            link.click();
-            successAlert('PDF generated successfully');
-        },
-        error: function(xhr) {
-            errorAlert(xhr.responseJSON.message);
-            console.log(xhr);
+    // Pre-check the checkboxes based on selectedBills in localStorage
+    $('.bill-checkbox').each(function () {
+        if (selectedBills.includes(this.value)) {
+            this.checked = true;
         }
     });
+}else{
+    $('#removeSelected').addClass('d-none');
 }
 
+// Function to update "Check All" checkbox based on current selections
+function updateCheckAllStatus() {
+    const allSelected = $('.bill-checkbox').length === $('.bill-checkbox:checked').length;
+    $('input[name="checkAll"]').prop('checked', allSelected);
+}
 
-        $(".amountBill").on("blur", function() {
+// Handle "Check All" functionality
+$('input[name="checkAll"]').on('change', function () {
+    if (this.checked) {
+        $('.bill-checkbox').each(function () {
+            if (!selectedBills.includes(this.value)) {
+                selectedBills.push(this.value); // Add to selectedBills if not already there
+            }
+            this.checked = true;
+        });
+    } else {
+        $('.bill-checkbox').each(function () {
+            this.checked = false;
+        });
+        selectedBills.length = 0; // Clear the selectedBills array
+    }
+
+    localStorage.setItem('selectedBills', JSON.stringify(selectedBills));
+    updateCheckAllStatus(); // Update the "Check All" status
+});
+
+// Handle individual checkbox change
+$('input[name="select_bills[]"]').on('change', function () {
+    const billValue = this.value;
+
+    if (this.checked) {
+        if (!selectedBills.includes(billValue)) {
+            selectedBills.push(billValue); // Add to selectedBills if not already there
+        }
+    } else {
+        const index = selectedBills.indexOf(billValue);
+        if (index > -1) {
+            selectedBills.splice(index, 1); // Remove from selectedBills
+        }
+    }
+
+    localStorage.setItem('selectedBills', JSON.stringify(selectedBills));
+    updateCheckAllStatus(); // Update the "Check All" status
+});
+
+// Ensure "Check All" status is correct on page load
+updateCheckAllStatus();
+
+
+
+        function addNotes(id, notes) {
+            $('#addNotes').modal('show');
+            $('#bill_id').val(id);
+            $('#notes').val(notes);
+        }
+
+
+        $(document).ready(function () {
+            $('#notesForm').on('submit', function (event) {
+                event.preventDefault(); // Prevent default form submission
+
+                let formData = $(this).serialize(); // Serialize the form data
+
+                $.ajax({
+                    url: $(this).attr('action'), // Form action URL
+                    method: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        $('#addNotes').modal('hide'); // Close the modal
+                        successAlert(response.message || 'The notes were successfully updated!');
+                    },
+                    error: function (xhr) {
+                        console.error('Error:', xhr.responseText);
+                    },
+                });
+            });
+        });
+
+        function billPrint() {
+            var form = $('#selectData').serialize();
+            $.ajax({
+                url: "{{ route('admin.bill.pdf-print') }}",
+                type: 'POST',
+                data: form,
+                xhrFields: {
+                    responseType: 'blob' // Handle binary response for the PDF
+                },
+                success: function (response) {
+                    var blob = new Blob([response], { type: 'application/pdf' });
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = 'bills.pdf';
+                    link.click();
+                    successAlert('PDF generated successfully');
+                },
+                error: function (xhr) {
+                    errorAlert(xhr.responseJSON.message);
+                    console.log(xhr);
+                }
+            });
+        }
+
+
+        $(".amountBill").on("blur", function () {
             var amount = $(this).val();
             var fieldName = $(this).attr('name');  // Corrected to use attr() method
             var id = $(this).data('id');  // Assuming you are passing the ID via data-id attribute
@@ -236,21 +320,53 @@ function billPrint() {
                 method: 'POST',
                 data: {
                     field: fieldName, // Send the updated value
-                    amount :amount,
+                    amount: amount,
                     id: id,         // Send the item's id
                     _token: '{{ csrf_token() }}'  // CSRF token for security, if needed
                 },
-                success: function(response) {
+                success: function (response) {
                     // successAlert(response.message);
                     // setTimeout(() => location.reload(), 1500);
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     errorAlert(xhr.responseJSON.message);
                     console.log(xhr);
                 }
             });
         });
 
-       
+
+        function generateBill(){
+            var building_id = $('#building').val();
+            if(!building_id || building_id == 0){
+                errorAlert('Please select a building');
+                return;
+            }
+            $.ajax({
+                url: '{{ route('admin.bill.generate-bill', ':id') }}'.replace(':id', building_id),
+                type: 'Get',
+                success: function (response) {
+                    successAlert(response.message);
+
+                    // Submit Filter Form
+                    var currentDate = new Date();
+                    var currentMonth = currentDate.getMonth() + 1; // JavaScript months are zero-based
+                    var currentYear = currentDate.getFullYear();
+console.log(currentMonth);
+                    // Update filter form values
+                    $('#building').val(building_id);
+                    $('#month').val(currentMonth);
+                    $('#year').val(currentYear);
+
+                    // Submit Filter Form
+                    $('#filterForm').submit();
+                },
+                error: function (xhr) {
+                    errorAlert(xhr.responseJSON.message);
+                    console.log(xhr);
+                }
+            });
+        }
+
     </script>
 @endpush
