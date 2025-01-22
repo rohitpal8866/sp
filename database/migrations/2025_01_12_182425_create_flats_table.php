@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('flats', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('building_id')->constrained();
+            $table->foreignId('building_id')->onDelete('cascade')->constrained();
             $table->foreignId('user_id')->nullable()->constrained();
             $table->string('name');
             $table->float('rent')->default(0);

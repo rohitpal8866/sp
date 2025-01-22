@@ -220,7 +220,7 @@
                         type: 'DELETE',
                         dataType: 'json',
                         success: function(response) {
-                            successAlert(response.messe);
+                            successAlert(response.message);
                             setTimeout(() => location.reload(), 1500);
                         },
                         error: function(xhr) {

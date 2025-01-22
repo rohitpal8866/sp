@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('flat_reports', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('flat_id')->constrained();
+            $table->foreignId('flat_id')->onDelete('cascade')->constrained();
             $table->decimal('rent', 10, 2); // Rent bill amount
             $table->decimal('maintenance', 10, 2)->nullable(); // Maintenance bill amount
             $table->decimal('light_bill', 10, 2)->nullable(); // Light bill amount

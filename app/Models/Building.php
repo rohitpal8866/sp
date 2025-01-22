@@ -8,4 +8,8 @@ class Building extends Model
 {
     protected $table = 'buildings';
     protected $fillable = ['name'];
+
+    public function flats(){
+        return $this->hasMany(Flat::class);
+    }
 }

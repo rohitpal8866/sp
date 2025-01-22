@@ -75,6 +75,7 @@ class BuildingController extends Controller
     public function delete($id)
     {
         $building = Building::findOrFail($id);
+        $building->flats()->delete();
         $building->delete();
 
         return response()->json([
