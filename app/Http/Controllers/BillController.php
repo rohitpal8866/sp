@@ -13,9 +13,9 @@ class BillController extends Controller
     public function index(Request $request)
     {
       
-        // $this->billPrint($request);
+        $this->billPrint($request);
 
-        // dd('asd');
+        dd('asd');
         $search = $request->get("search");
         $month = $request->get("month");
         $year = $request->get("year");
