@@ -51,7 +51,7 @@
 
                         <li class="sidebar-title">Raise Support</li>
                         <li class="sidebar-item">
-                            <a onclick="getUpdateGit()" class="sidebar-link" style="cursor: pointer;" target="_blank">
+                            <a onclick="getUpdateGit(this)" data-route="{{Route('git-pull')}}" class="sidebar-link" style="cursor: pointer;" target="_blank">
                                 <i class="bi bi-life-preserver"></i>
                                 <span>Get Updatee</span>
                             </a>

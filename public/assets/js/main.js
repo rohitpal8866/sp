@@ -111,9 +111,10 @@ $(document).ajaxStart(function () {
 });
 
 
-function getUpdateGit(){
+function getUpdateGit(element){
+    var url = $(element).attr('data-route');
     $.ajax({
-        url: 'git-pull',
+        url: url,
         type: 'GET',
         dataType: 'json',
         success: function(response) {
