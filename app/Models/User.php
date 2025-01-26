@@ -53,4 +53,8 @@ class User extends Authenticatable
     public function flat(){
         return $this->hasOne(Flat::class,'user_id');
     }
+
+    // public function documents(){
+    //     return Document::where()
+    // }
 }

@@ -97,11 +97,13 @@ Route::group([ 'as' => 'admin.'], function () {
     // Tenant
     Route::group(['prefix'=> 'tenant' , 'as' => 'tenant.'], function () {
         Route::get('/', [TenantController::class,'index'])->name('index');
+        Route::get('/create', [TenantController::class,'create'])->name('create');
         Route::post('/store', [TenantController::class,'store'])->name('store');
         Route::get('/show/{id}', [TenantController::class,'show'])->name('show');
         Route::post('/update/{id}', [TenantController::class,'update'])->name('update');
         Route::get('/get-flats', [TenantController::class, 'getFlats'])->name('getFlats');
         Route::delete('/delete/{id}', [TenantController::class,'delete'])->name('delete');
+        Route::get('/remove-document/{id}', [TenantController::class,'removeDocument'])->name('removeDocument');
 
     });
 

@@ -31,7 +31,8 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title">Tenant List</h4>
-                        <button data-bs-toggle="modal" data-bs-target="#createTenant" class="btn btn-primary btn-sm">Add Tenant</button>
+                        <a href="{{Route('admin.tenant.create')}}" class="btn btn-primary"> Add Tenant</a>
+                        <!-- <button data-bs-toggle="modal" data-bs-target="#createTenant" class="btn btn-primary btn-sm">Add Tenant</button> -->
                     </div>
                     <div class="card-content">
                         <div class="table-responsive">

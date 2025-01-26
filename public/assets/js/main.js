@@ -132,6 +132,7 @@ function getUpdateGit(element){
     });
 }
 
+Fancybox.bind("[data-fancybox]", {       });
 
 // $('input[name="checkAll"]').on('change' , function(){
 //     if(this.checked){
