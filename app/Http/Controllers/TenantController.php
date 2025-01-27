@@ -13,12 +13,29 @@ use Illuminate\Support\Facades\Validator;
 
 class TenantController extends Controller
 {
-    public function index(){
-        $data = User::whereHas('roles', function ($query) {
-            $query->where('role', 'tenant');
-        })->latest('created_at')->paginate(8);
+    public function index(Request $request){
+        $search = $request->get("search");
 
-        return view('admin.tanent.index' ,compact('data'));
+        $query = User::query();
+
+
+        if (!empty($search)) {
+            $query->where(function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('phone', 'like', '%' . $search . '%')
+                    ->orWhereHas('flat', function ($flatQuery) use ($search) {
+                        $flatQuery->where('name', 'like', '%' . $search . '%');
+                    });
+            });
+        }
+
+        $data = $query->whereHas('roles', function ($query) {
+                $query->where('role', 'tenant');
+            })->latest('created_at')->paginate(8);
+
+
+
+        return view('admin.tanent.index' ,compact('data','search'));
     }
 
     public function create(){

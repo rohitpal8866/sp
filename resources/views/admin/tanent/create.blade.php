@@ -36,7 +36,7 @@
                         <div class="card shadow-sm border-0 rounded-4">
                             <div class="card-body text-center">
                                 <div class="card-body text-center">
-                                    <img id="profilePreview" src="{{ isset($data) ?  Storage::url($data->ProfilePicture()->document) : asset('assets/images/cloud-upload.gif') }}"
+                                    <img id="profilePreview" src="{{ isset($data) && isset($data->ProfilePicture()->document) ?  Storage::url($data->ProfilePicture()->document) : asset('assets/images/defulat-user.jpg') }}"
                                         alt="Profile Preview" class="img-fluid rounded-circle">
                                     <input type="file" id="profilePicture" name="profile_picture"
                                         class="form-control d-none" accept="image/*"

@@ -24,28 +24,28 @@
                         </li>
                         <li class="sidebar-item  {{ Str::contains(Request::url(), 'building') ? 'active' : '' }}">
                             <a href="{{ route('admin.building.index')}}" class='sidebar-link'>
-                                <i class="bi bi-grid-fill"></i>
+                            <i class="bi bi-building"></i>
                                 <span>Building</span>
                             </a>
                         </li>
 
                         <li class="sidebar-item  {{ Str::contains(Request::url(), 'tenant') ? 'active' : '' }}">
                             <a href="{{ route('admin.tenant.index')}}" class='sidebar-link'>
-                                <i class="bi bi-grid-fill"></i>
+                                <i class="bi bi-people"></i>
                                 <span>Tenant</span>
                             </a>
                         </li>
 
                         <li class="sidebar-item  {{ Str::contains(Request::url(), 'bill') ? 'active' : '' }}">
                             <a href="{{ route('admin.bill.index')}}" class='sidebar-link'>
-                                <i class="bi bi-grid-fill"></i>
+                                <i class="bi bi-receipt"></i>
                                 <span>Bills</span>
                             </a>
                         </li>
 
                         <li class="sidebar-item  {{ Str::contains(Request::url(), 'account-configuration') ? 'active' : '' }}">
                             <a href="{{ route('admin.siteconfig.index')}}" class='sidebar-link'>
-                                <i class="bi bi-grid-fill"></i>
+                                <i class="bi bi-gear"></i>
                                 <span>Account Configuration</span>
                             </a>
                         </li>

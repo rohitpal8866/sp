@@ -30,10 +30,21 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title">Tenant List</h4>
-                        <a href="{{Route('admin.tenant.create')}}" class="btn btn-primary"> Add Tenant</a>
-                        <!-- <button data-bs-toggle="modal" data-bs-target="#createTenant" class="btn btn-primary btn-sm">Add Tenant</button> -->
+                        <h4 class="card-title mb-0 flex-grow-1 text-start">Tenant List</h4>
+                        <div class="d-flex align-items-center">
+                            <form action="" class="me-2">
+                                <div class="form-group position-relative has-icon-left" style="margin-bottom: 0">
+                                    <input type="text" name="search" id="search" class="form-control form-control-sm" placeholder="Search..." value="{{ isset($search) ? $search : '' }}">
+                                    <div class="form-control-icon">
+                                        <i class="bi bi-search"></i>
+                                    </div>
+                                </div>
+
+                            </form>
+                            <a href="{{Route('admin.tenant.create')}}" class="btn btn-primary">Add Tenant</a>
+                        </div>
                     </div>
+
                     <div class="card-content">
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
@@ -43,7 +54,7 @@
                                         <th scope="col" style="width: 25%;">NAME</th>
                                         <th scope="col" style="width: 15%;">Phone</th>
                                         <th scope="col" style="width: 15%;">Flat</th>
-                                        <th scope="col" style="width: 20%;">Building</th>                                       
+                                        <th scope="col" style="width: 20%;">Building</th>
                                         <th scope="col" style="width: 30%;">ACTION</th>
                                     </tr>
                                 </thead>
@@ -52,21 +63,29 @@
                                         <tr>
                                             <th scope="row">{{ $loop->iteration }}</th>
                                             <td class="text-bold-500">{{ $item->name }}</td>
-                                            <td> <a href="https://wa.me/91{{ $item->phone }}">{{ $item->phone }}</a> </td>
+                                            <td>
+                                                <a target="_blank"
+                                                    href="https://api.whatsapp.com/send/?phone=91{{ $item->phone }}&text=hello%20{{ urlencode($item->name) }}"><i
+                                                        class="bi bi-whatsapp p-2"></i></a>
+                                                <a target="_blank" href="tel:{{ $item->phone }}"><i
+                                                        class="bi bi-telephone-outbound"></i></a>
+                                            </td>
                                             <td>{{ $item->flat ? $item->flat->name : '-' }}</td>
                                             <td>{{ $item->flat ? $item->flat->building->name : '-' }}</td>
                                             <td>
-                                                <a href="{{Route('admin.tenant.show', $item->id)}}" class="btn btn-sm btn-warning">
+                                                <a href="{{Route('admin.tenant.show', $item->id)}}"
+                                                    class="btn btn-sm btn-warning">
                                                     <i class="bi bi-pencil-square"></i> Edit
                                                 </a>
-                                                <a href="javascript:void(0)" onclick="deleteRecord({{ $item->id }})" class="btn btn-sm btn-danger">
+                                                <a href="javascript:void(0)" onclick="deleteRecord({{ $item->id }})"
+                                                    class="btn btn-sm btn-danger">
                                                     <i class="bi bi-trash"></i> Delete
                                                 </a>
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="5" class="text-center">No data found</td>
+                                            <td colspan="6" class="text-center">No data found</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -75,7 +94,7 @@
                     </div>
                     <div class="card-footer">
                         <!-- Display pagination links -->
-                        {{ $data->links('pagination::bootstrap-5') }}
+                        {{ $data->appends(['search' => $search])->links('pagination::bootstrap-5') }}
                     </div>
                 </div>
             </div>
@@ -90,14 +109,17 @@
                 <h5 class="modal-title" id="emailModalLabel">Add Tenant</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="tenantForm" action="{{ route('admin.tenant.store') }}" method="POST" enctype="multipart/form-data">
+            <form id="tenantForm" action="{{ route('admin.tenant.store') }}" method="POST"
+                enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="name" class="form-label">Tenant Name</label>
                         <div class="form-group has-icon-left">
                             <div class="position-relative">
-                                <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" placeholder="Enter Tenant Name" value="{{ old('name') }}" required>
+                                <input type="text" name="name" id="name"
+                                    class="form-control @error('name') is-invalid @enderror"
+                                    placeholder="Enter Tenant Name" value="{{ old('name') }}" required>
                                 <div class="form-control-icon">
                                     <i class="bi bi-person"></i>
                                 </div>
@@ -113,7 +135,9 @@
                         <label for="phone" class="form-label">Phone Number</label>
                         <div class="form-group has-icon-left">
                             <div class="position-relative">
-                                <input type="number" name="phone" id="phone" class="form-control @error('phone') is-invalid @enderror" placeholder="Enter Tenant phone" value="{{ old('phone') }}">
+                                <input type="number" name="phone" id="phone"
+                                    class="form-control @error('phone') is-invalid @enderror"
+                                    placeholder="Enter Tenant phone" value="{{ old('phone') }}">
                                 <div class="form-control-icon">
                                     <i class="bi bi-phone"></i>
                                 </div>
@@ -129,7 +153,8 @@
                         <label for="Building" class="form-label">Select Building</label>
                         <div class="form-group has-icon-left">
                             <div class="position-relative">
-                                <select name="building" id="building" onchange="getFlat(this.value)" class="form-control @error('building') is-invalid @enderror">
+                                <select name="building" id="building" onchange="getFlat(this.value)"
+                                    class="form-control @error('building') is-invalid @enderror">
                                     <option value="">Select Building</option>
                                     @foreach (getBuilding() as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -179,27 +204,27 @@
 @push('scripts')
     <script>
 
-        function getFlat(building_id , id = null) {
+        function getFlat(building_id, id = null) {
             $.ajax({
                 url: '{{ route('admin.tenant.getFlats') }}', // Route to handle the AJAX request
                 type: 'GET',
                 data: { building_id: building_id },
-                success: function(response) {
+                success: function (response) {
                     $('#flat').empty();
                     $('#flat').append('<option value="">Select Flat</option>');
 
                     if (response.flats.length > 0) {
-                        response.flats.forEach(function(flat) {
+                        response.flats.forEach(function (flat) {
                             $('#flat').append('<option value="' + flat.id + '">' + flat.name + '</option>');
                         });
-                        if(id){
+                        if (id) {
                             $('#flat').val(id);
                         }
                     } else {
                         $('#flat').append('<option value="">No Flats Available</option>');
                     }
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     console.error(xhr);
                     alert('An error occurred while fetching flats.');
                 }
@@ -208,7 +233,7 @@
 
 
         // Function to handle storing new tenant
-        $('#tenantForm').submit(function(e) {
+        $('#tenantForm').submit(function (e) {
             e.preventDefault();
             let formData = $(this).serialize();
             let url = $(this).attr('action');
@@ -217,12 +242,12 @@
                 url: url,
                 type: 'POST',
                 data: formData,
-                success: function(response) {
+                success: function (response) {
                     $('#createTenant').modal('hide');
                     successAlert(response.message);
                     setTimeout(() => location.reload(), 1500);
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     errorAlert(xhr.responseJSON.message);
                     console.log(xhr);
                 }
@@ -235,24 +260,24 @@
                 url: '{{ route('admin.tenant.show', ':id') }}'.replace(':id', id), // Fetch tenant by ID
                 type: 'GET',
                 dataType: 'json',
-                success: function(response) {
+                success: function (response) {
                     $('#createTenant').modal('show'); // Show the modal
                     console.log(response.flat.id);
-                    
+
                     // Populate the form with existing tenant data
                     $('#name').val(response.name);
                     $('#phone').val(response.phone);
                     $('#building').val(response.flat.building_id);
-                    getFlat(response.flat.building_id, response.flat.id);                  
+                    getFlat(response.flat.building_id, response.flat.id);
 
                     var flatId = response.flat.id;
                     // Set form action for updating the tenant
                     $('#tenantForm').attr('action', '{{ route('admin.tenant.update', ':id') }}'.replace(':id', response.id));
 
                     // Call getFlat function to update the flat options based on the selected building
-                   
+
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     alert('Error: ' + xhr.responseJSON.message);
                     console.error(xhr);
                 }
@@ -275,11 +300,11 @@
                         url: '{{ route('admin.tenant.delete', ':id') }}'.replace(':id', id),
                         type: 'DELETE',
                         dataType: 'json',
-                        success: function(response) {
+                        success: function (response) {
                             successAlert(response.message);
                             setTimeout(() => location.reload(), 1500);
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             errorAlert(xhr.responseJSON.message);
                             console.log(xhr);
                         }
@@ -291,7 +316,7 @@
         $('#createTenant').on('hidden.bs.modal', function () {
             $('#tenantForm')[0].reset();
             $('#name').val('');
-            $('#tenantForm').attr('action', '{{ route('admin.tenant.store') }}'); 
+            $('#tenantForm').attr('action', '{{ route('admin.tenant.store') }}');
         });
 
     </script>
