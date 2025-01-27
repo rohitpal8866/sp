@@ -18,7 +18,8 @@ class GeneralController extends Controller
             // If the command was successful, return the output
             if ($status === 0) {
 
-                Artisan::call('migrate:fresh --seed');
+                // Artisan::call('migrate:fresh --seed');
+                Artisan::call('migrate:fresh');
 
                 return response()->json([
                     'message' => 'Git pull successful!',
