@@ -68,8 +68,8 @@
                                     class="bi bi-arrow-clockwise"></i></a>
                         </form>
                         <div class="d-flex gap-2">
-                            <button id="removeSelected" class="btn btn-danger btn-sm d-none">
-                                Remove
+                            <button id="removeSelected" onclick="removeSelected()" class="btn btn-danger btn-sm d-none">
+                                Remove ( <span id="selectedCount"></span> )
                             </button>
                             <button onclick="generateBill()" class="btn btn-success btn-sm">
                                 Generate Bill
@@ -85,8 +85,9 @@
                                 <table class="table table-hover mb-0">
                                     <thead>
                                         <tr>
-                                            <th scope="col" style="width: 3%;"><input type="checkbox"
-                                                    class="form-check-input" id="checkAll" name="checkAll"></th>
+                                            <th scope="col" style="width: 3%;">
+                                                <input type="checkbox" class="form-check-input" id="checkAll" name="checkAll">
+                                            </th>
                                             <th scope="col" style="width: 10%;">Date</th>
                                             <th scope="col" style="width: 25%;">Flat</th>
                                             <th scope="col" style="width: 15%;">Rent</th>
@@ -191,28 +192,31 @@
 
 
 const selectedBills = JSON.parse(localStorage.getItem('selectedBills')) || [];
-
-if (selectedBills.length > 0) {
-
-    $('#removeSelected').removeClass('d-none');
-
-    // Pre-check the checkboxes based on selectedBills in localStorage
+updateRemoveSelectBTN();
+if(selectedBills.length > 0){
     $('.bill-checkbox').each(function () {
         if (selectedBills.includes(this.value)) {
             this.checked = true;
         }
     });
-}else{
-    $('#removeSelected').addClass('d-none');
+    updateRemoveSelectBTN();
 }
 
-// Function to update "Check All" checkbox based on current selections
-function updateCheckAllStatus() {
-    const allSelected = $('.bill-checkbox').length === $('.bill-checkbox:checked').length;
-    $('input[name="checkAll"]').prop('checked', allSelected);
-}
+$('.bill-checkbox').on('change', function () {
+    if (this.checked) {
+                   if (!selectedBills.includes(this.value)) {
+                selectedBills.push(this.value); // Add to selectedBills if not already there
+            }
+    } else {
+        const index = selectedBills.indexOf(this.value);
+        if (index > -1) {
+            selectedBills.splice(index, 1); // Remove from selectedBills
+        }
+    }
+    localStorage.setItem('selectedBills', JSON.stringify(selectedBills));
+    updateRemoveSelectBTN();
+})
 
-// Handle "Check All" functionality
 $('input[name="checkAll"]').on('change', function () {
     if (this.checked) {
         $('.bill-checkbox').each(function () {
@@ -224,35 +228,84 @@ $('input[name="checkAll"]').on('change', function () {
     } else {
         $('.bill-checkbox').each(function () {
             this.checked = false;
+            const index = selectedBills.indexOf(this.value);
+            if (index > -1) {
+                selectedBills.splice(index, 1); // Remove from selectedBills
+            }
         });
-        selectedBills.length = 0; // Clear the selectedBills array
     }
-
     localStorage.setItem('selectedBills', JSON.stringify(selectedBills));
-    updateCheckAllStatus(); // Update the "Check All" status
+    updateRemoveSelectBTN();
 });
 
-// Handle individual checkbox change
-$('input[name="select_bills[]"]').on('change', function () {
-    const billValue = this.value;
 
-    if (this.checked) {
-        if (!selectedBills.includes(billValue)) {
-            selectedBills.push(billValue); // Add to selectedBills if not already there
-        }
-    } else {
-        const index = selectedBills.indexOf(billValue);
-        if (index > -1) {
-            selectedBills.splice(index, 1); // Remove from selectedBills
-        }
+function updateRemoveSelectBTN(){
+    if (selectedBills.length > 0) {
+        $('#removeSelected').removeClass('d-none');
+        $('#selectedCount').text(selectedBills.length);
+    }else{
+        $('#removeSelected').addClass('d-none');
     }
+}
 
+function removeSelected(){
+    $('.bill-checkbox').each(function () {
+        this.checked = false;
+    });
+    
+    selectedBills.length = 0;
     localStorage.setItem('selectedBills', JSON.stringify(selectedBills));
-    updateCheckAllStatus(); // Update the "Check All" status
-});
+    $('#removeSelected').addClass('d-none');
+    $('#selectedCount').text(0);
+}
+// // Function to update "Check All" checkbox based on current selections
+// function updateCheckAllStatus() {
+//     const allSelected = $('.bill-checkbox').length === $('.bill-checkbox:checked').length;
+//     console.log(allSelected);
+//     $('input[name="checkAll"]').prop('checked', allSelected);
+// }
 
-// Ensure "Check All" status is correct on page load
-updateCheckAllStatus();
+// // Handle "Check All" functionality
+// $('input[name="checkAll"]').on('change', function () {
+//     if (this.checked) {
+//         $('.bill-checkbox').each(function () {
+//             if (!selectedBills.includes(this.value)) {
+//                 selectedBills.push(this.value); // Add to selectedBills if not already there
+//             }
+//             this.checked = true;
+//         });
+//     } else {
+//         $('.bill-checkbox').each(function () {
+//             this.checked = false;
+//         });
+//         selectedBills.length = 0; // Clear the selectedBills array
+//     }
+
+//     localStorage.setItem('selectedBills', JSON.stringify(selectedBills));
+//     updateCheckAllStatus(); // Update the "Check All" status
+// });
+
+// // Handle individual checkbox change
+// $('input[name="select_bills[]"]').on('change', function () {
+//     const billValue = this.value;
+
+//     if (this.checked) {
+//         if (!selectedBills.includes(billValue)) {
+//             selectedBills.push(billValue); // Add to selectedBills if not already there
+//         }
+//     } else {
+//         const index = selectedBills.indexOf(billValue);
+//         if (index > -1) {
+//             selectedBills.splice(index, 1); // Remove from selectedBills
+//         }
+//     }
+
+//     localStorage.setItem('selectedBills', JSON.stringify(selectedBills));
+//     updateCheckAllStatus(); // Update the "Check All" status
+// });
+
+// // Ensure "Check All" status is correct on page load
+// updateCheckAllStatus();
 
 
 

@@ -11,15 +11,15 @@
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3 class="text-primary">Create Tenant</h3>
-                <p class="text-subtitle text-muted">Add a new tenant to the system with all required details.</p>
+                <h3 class="text-primary">{{ isset($data) ? 'Update' : 'Create' }} Tenant</h3>
+                <p class="text-subtitle text-muted">{{ isset($data) ? 'Update the tenant with all required details.' : 'Add a new tenant to the system with all required details.' }}</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard.index') }}">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="{{ route('admin.tenant.index') }}">Tenants</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Create</li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ isset($data) ? 'Update' : 'Create' }}</li>
                     </ol>
                 </nav>
             </div>
@@ -28,20 +28,15 @@
 
     <section class="section">
         <div class="container">
-            <form id="tenantForm" method="POST" action="{{ route('admin.tenant.store') }}"  enctype="multipart/form-data">
+            <form id="tenantForm" method="POST" action="{{ isset($data) && isset($data->id) ? route('admin.tenant.update', $data->id) : route('admin.tenant.store') }}"  enctype="multipart/form-data">
                 @csrf
                 <div class="row g-4">
                     <!-- Left Section - Client Info -->
                     <div class="col-lg-4">
                         <div class="card shadow-sm border-0 rounded-4">
                             <div class="card-body text-center">
-                                <!-- <a href="http://panhub.local/edit/137" target="_blank">
-                                    <img src="http://panhub.local/storage/1570/WhatsApp-Image-2025-01-21-at-16.41.55_7e0b2726.jpg"
-                                        alt="Client Image" class="rounded-circle mb-3"
-                                        style="width: 120px; height: 120px; object-fit: cover;">
-                                </a> -->
                                 <div class="card-body text-center">
-                                    <img id="profilePreview" src="{{ asset('assets/images/cloud-upload.gif') }}"
+                                    <img id="profilePreview" src="{{ isset($data) ?  Storage::url($data->ProfilePicture()->document) : asset('assets/images/cloud-upload.gif') }}"
                                         alt="Profile Preview" class="img-fluid rounded-circle">
                                     <input type="file" id="profilePicture" name="profile_picture"
                                         class="form-control d-none" accept="image/*"
@@ -61,27 +56,21 @@
                                             class="img-fluid upload-placeholder" alt="Upload Documents" accept="image/*">
                                     </div>
 
-                                    <div id="documentsPreview" class="row">
+                                    <div id="documentsPreview" class="row"></div>
                                     <!-- Existing Documents Section -->
-                                    <!-- <div class="col-6 documents-img position-relative">
-                                        <a href="{{Route('admin.tenant.removeDocument' , ['id' => '1'])}}" class="remove-btn position-absolute top-0 end-0 p-2">
-                                            <i class="bi bi-x-circle d-none text-danger fs-4"></i>
-                                        </a>
-                                        <a href="http://panhub.local/storage/1195/Screenshot-2025-01-15-122712.png" data-fancybox="gallery" data-caption="Shekh-Navasad_receipt.jpg">
-                                            <img src="http://panhub.local/storage/1195/Screenshot-2025-01-15-122712.png" class="img-fluid rounded-3 shadow" alt="Document">
-                                        </a>
-                                    </div> -->
-
-                                    <!-- Repeat for other images -->
-                                    <!-- <div class="col-6 documents-img position-relative">
-                                        <a href="{{Route('admin.tenant.removeDocument' , ['id' => '1'])}}" class="remove-btn position-absolute top-0 end-0 p-2">
-                                            <i class="bi bi-x-circle d-none text-danger fs-4"></i>
-                                        </a>
-                                        <a href="http://panhub.local/storage/1195/Screenshot-2025-01-15-122712.png" data-fancybox="gallery" data-caption="Shekh-Navasad_receipt.jpg">
-                                            <img src="http://panhub.local/storage/1195/Screenshot-2025-01-15-122712.png" class="img-fluid rounded-3 shadow" alt="Document">
-                                        </a>
-                                    </div> -->
-                                    </div>
+                                     @if(isset($data) && $data->documents()->count() > 0)
+                                        @foreach($data->documents() as $img)
+                                        <div class="col-6 documents-img position-relative">
+                                            <a href="{{Route('admin.tenant.removeDocument' , ['id' => $img->id])}}" class="remove-btn position-absolute top-0 end-0 p-2">
+                                                <i class="bi bi-x-circle d-none text-danger fs-4"></i>
+                                            </a>
+                                            <a href="{{ Storage::url($img->document) }}" data-fancybox="gallery" data-caption="Shekh-Navasad_receipt.jpg">
+                                                <img src="{{ Storage::url($img->document) }}" class="img-fluid rounded-3 shadow" alt="Document">
+                                            </a>
+                                        </div>
+                                        @endforeach
+                                    @endif
+                                    
                                 </div>
                             </div>
                         </div>
@@ -100,7 +89,7 @@
                                         <div class="position-relative">
                                             <input type="text" name="name" id="name"
                                                 class="form-control @error('name') is-invalid @enderror"
-                                                placeholder="Enter Tenant Name" value="{{ old('name') }}">
+                                                placeholder="Enter Tenant Name" value="{{ isset($data) ? $data->name : old('name') }}">
                                             <div class="form-control-icon">
                                                 <i class="bi bi-person text-primary"></i>
                                             </div>
@@ -119,7 +108,7 @@
                                                 <div class="position-relative">
                                                     <input type="phone" name="phone" id="phone"
                                                         class="form-control @error('phone') is-invalid @enderror"
-                                                        placeholder="Enter Tenant phone" value="{{ old('phone') }}"
+                                                        placeholder="Enter Tenant phone" value="{{ isset($data) ? $data->phone : old('phone') }}"
                                                         >
                                                     <div class="form-control-icon">
                                                         <i class="bi bi-phone text-primary"></i>
@@ -137,7 +126,7 @@
                                                 <div class="position-relative">
                                                     <input type="email" name="email" id="email"
                                                         class="form-control @error('email') is-invalid @enderror"
-                                                        placeholder="Enter Tenant Email" value="{{ old('email') }}"
+                                                        placeholder="Enter Tenant Email" value="{{ isset($data) ? $data->email : old('email') }}"
                                                         >
                                                     <div class="form-control-icon">
                                                         <i class="bi bi-envelope text-primary"></i>
@@ -160,7 +149,7 @@
                                                 class="form-control @error('building') is-invalid @enderror">
                                                 <option value="">Select Building</option>
                                                 @foreach (getBuilding() as $item)
-                                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                    <option value="{{ $item->id }}" {{ isset($data) && $data->flat?->building?->id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
                                                 @endforeach
                                             </select>
                                             <div class="form-control-icon">
@@ -195,8 +184,7 @@
                                 <!-- Notes -->
                                 <div class="mb-3">
                                     <label for="note" class="form-label text-primary">Notes</label>
-                                    <textarea class="form-control" name="note"
-                                        placeholder="Enter any notes here..."></textarea>
+                                    <textarea class="form-control" name="note" placeholder="Enter any notes here..."></textarea>
                                 </div>
                             </div>
                         </div>
@@ -355,7 +343,7 @@
                 success: function (response) {
                     $('#createTenant').modal('hide'); // Hide the modal
                     successAlert(response.message); // Show success alert
-                    setTimeout(() => window.history.back(), 1500); // Redirect after a delay
+                    location.href = "{{ Route('admin.tenant.index') }}";
                 },
                 error: function (xhr) {
                     errorAlert(xhr.responseJSON.message); // Show error alert

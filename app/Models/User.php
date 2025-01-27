@@ -47,14 +47,18 @@ class User extends Authenticatable
     }
 
     public function roles(){
-        return $this->hasMany(Roles::class, 'user_id');
+        return $this->hasOne(Roles::class, 'user_id');
     }
 
     public function flat(){
         return $this->hasOne(Flat::class,'user_id');
     }
 
-    // public function documents(){
-    //     return Document::where()
-    // }
+    public function ProfilePicture(){
+        return $this->hasOne(Document::class,'model_id')->where('model_type','App\Models\User')->where('uuid','profile_picture')->first();    
+    }
+
+    public function documents(){
+        return $this->hasOne(Document::class,'model_id')->where('model_type','App\Models\User')->where('uuid','documents')->get();   
+    }
 }

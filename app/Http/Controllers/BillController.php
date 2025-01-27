@@ -17,9 +17,9 @@ class BillController extends Controller
 
         // dd('asd');
         $search = $request->get("search");
-        $month = $request->get("month");
-        $year = $request->get("year");
-        $building_id = $request->get("building") ?? 1;
+        $month = $request->get("month") ?? Carbon::now()->month;
+        $year = $request->get("year") ?? Carbon::now()->year;
+        $building_id = $request->get("building") ;
 
         $data = Bill::when($search, function ($query, $search) {
             return $query->whereHas('flat', function ($query) use ($search) {

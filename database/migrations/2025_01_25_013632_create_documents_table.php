@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->morphs('model');
-            $table->uuid()->nullable()->unique();
+            $table->uuid()->nullable();
             $table->string('document')->nullable();
             $table->string('type')->nullable();
             $table->timestamps();

@@ -40,9 +40,10 @@
                                 <thead>
                                     <tr>
                                         <th scope="col" style="width: 10%;">#</th>
-                                        <th scope="col" style="width: 40%;">NAME</th>
-                                        <th scope="col" style="width: 10%;">Flat</th>
+                                        <th scope="col" style="width: 25%;">NAME</th>
                                         <th scope="col" style="width: 15%;">Phone</th>
+                                        <th scope="col" style="width: 15%;">Flat</th>
+                                        <th scope="col" style="width: 20%;">Building</th>                                       
                                         <th scope="col" style="width: 30%;">ACTION</th>
                                     </tr>
                                 </thead>
@@ -51,10 +52,11 @@
                                         <tr>
                                             <th scope="row">{{ $loop->iteration }}</th>
                                             <td class="text-bold-500">{{ $item->name }}</td>
+                                            <td> <a href="https://wa.me/91{{ $item->phone }}">{{ $item->phone }}</a> </td>
                                             <td>{{ $item->flat ? $item->flat->name : '-' }}</td>
-                                            <td> <a href="https://wa.me/{{ $item->phone }}">{{ $item->phone }}</a> </td>
+                                            <td>{{ $item->flat ? $item->flat->building->name : '-' }}</td>
                                             <td>
-                                                <a href="javascript:void(0)" onclick="editRecord({{ $item->id }})" class="btn btn-sm btn-warning">
+                                                <a href="{{Route('admin.tenant.show', $item->id)}}" class="btn btn-sm btn-warning">
                                                     <i class="bi bi-pencil-square"></i> Edit
                                                 </a>
                                                 <a href="javascript:void(0)" onclick="deleteRecord({{ $item->id }})" class="btn btn-sm btn-danger">
