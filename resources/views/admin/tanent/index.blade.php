@@ -50,11 +50,11 @@
                             <table class="table table-hover mb-0">
                                 <thead>
                                     <tr>
-                                        <th scope="col" style="width: 10%;">#</th>
-                                        <th scope="col" style="width: 25%;">NAME</th>
-                                        <th scope="col" style="width: 15%;">Phone</th>
+                                        <th scope="col" style="width: 12%;">#</th>
+                                        <th scope="col" style="width: 30%;">NAME</th>
+                                        <th scope="col" style="width: 10%;">Phone</th>
                                         <th scope="col" style="width: 15%;">Flat</th>
-                                        <th scope="col" style="width: 20%;">Building</th>
+                                        <th scope="col" style="width: 15%;">Building</th>
                                         <th scope="col" style="width: 30%;">ACTION</th>
                                     </tr>
                                 </thead>
@@ -62,7 +62,15 @@
                                     @forelse($data as $item)
                                         <tr>
                                             <th scope="row">{{ $loop->iteration }}</th>
-                                            <td class="text-bold-500">{{ $item->name }}</td>
+
+                                            <td class="col-3">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar avatar-md">
+                                                        <img src="{{ $item->ProfilePicture() ? Storage::url($item->ProfilePicture()->document) : asset('assets/images/defulat-user.jpg') }}" style="width: 40px; height: 40px; object-fit: cover;">
+                                                    </div>
+                                                    <p class="font-bold ms-3 mb-0">{{ $item->name }}</p>
+                                                </div>
+                                            </td>
                                             <td>
                                                 <a target="_blank"
                                                     href="https://api.whatsapp.com/send/?phone=91{{ $item->phone }}&text=hello%20{{ urlencode($item->name) }}"><i

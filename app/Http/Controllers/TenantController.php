@@ -70,7 +70,10 @@ class TenantController extends Controller
             // Associate flat if provided
             if ($request->flat) {
                 $flat = Flat::findOrFail($request->flat);
-                $user->flat()->associate($flat);
+                if($flat && $flat->user_id != $user->id){
+                    $flat->user_id = $user->id;
+                    $flat->save();                    
+                }
             }
         
             Roles::create([
