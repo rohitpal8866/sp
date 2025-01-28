@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Bills</title>
+    <title>{{ \Carbon\Carbon::now()->format('d-m-Y') }} - {{ env('APP_NAME') }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;

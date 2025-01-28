@@ -100,7 +100,7 @@ class BillController extends Controller
         // dd('asd');        
 
 
-        return $pdf->download('bills.pdf'); // Forces a PDF download
+        return $pdf->download(Carbon::now()->format('d-m-Y').'-bills.pdf'); // Forces a PDF download
     }
 
     public function generateBill($id){
@@ -124,6 +124,11 @@ class BillController extends Controller
             foreach ($flats as $flat) {
                 $lastMonthBill = $flat->bills()->orderBy('bill_date', 'desc')->first();
     
+                // Check If current month bill already exit then dont create new bill
+                if ($lastMonthBill && $lastMonthBill->bill_date->format('m') == Carbon::now()->format('m')) {
+                    return false;
+                }
+
                 Bill::create([
                     'flat_id' => $flat->id,
                     'rent' => $flat->rent,
