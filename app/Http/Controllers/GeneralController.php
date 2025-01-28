@@ -19,7 +19,7 @@ class GeneralController extends Controller
             if ($status === 0) {
 
                 // Artisan::call('migrate:fresh --seed');
-                Artisan::call('migrate:fresh');
+                // Artisan::call('migrate:fresh');
 
                 return response()->json([
                     'message' => 'Git pull successful!',
