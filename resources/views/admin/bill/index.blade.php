@@ -31,8 +31,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center ">
                         <form method="GET" id="filterForm" action="{{ route('admin.bill.index') }}" class="d-flex gap-2">
-                            <input type="text" name="search" class="form-control form-control-sm me-2"
-                                placeholder="Search..." value="{{ isset($search) ? $search : '' }}" />
+                            <input type="text" name="search" class="form-control form-control-sm me-2" placeholder="Search..." value="{{ isset($search) ? $search : '' }}" style="width: 150%" />
                             <select class="form-select form-select-sm" name="building" id="building">
                                 <option value="0">Select Building</option>
                                 @foreach ($buildings as $building)
@@ -338,27 +337,34 @@ function removeSelected(){
         });
 
         function billPrint() {
-            var form = $('#selectData').serialize();
-            $.ajax({
-                url: "{{ route('admin.bill.pdf-print') }}",
-                type: 'POST',
-                data: form,
-                xhrFields: {
-                    responseType: 'blob' // Handle binary response for the PDF
-                },
-                success: function (response) {
-                    var blob = new Blob([response], { type: 'application/pdf' });
-                    var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = 'bills.pdf';
-                    link.click();
-                    successAlert('PDF generated successfully');
-                },
-                error: function (xhr) {
-                    errorAlert(xhr.responseJSON.message);
-                    console.log(xhr);
-                }
-            });
+            const selectedBills = JSON.parse(localStorage.getItem('selectedBills')) || [];
+            if(selectedBills.length > 0){
+                $.ajax({
+                    url: "{{ route('admin.bill.pdf-print') }}",
+                    type: 'POST',
+                    data: {
+                        'select_bills': selectedBills
+                    },
+                    xhrFields: {
+                        responseType: 'blob' // Handle binary response for the PDF
+                    },
+                    success: function (response) {
+                        var blob = new Blob([response], { type: 'application/pdf' });
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = 'bills.pdf';
+                        link.click();
+                        successAlert('PDF generated successfully');
+                    },
+                    error: function (xhr) {
+                        errorAlert(xhr.responseJSON.message);
+                        console.log(xhr);
+                    }
+                });
+            }else{
+                errorAlert('Please select at least one bill');
+            }
+           
         }
 
 
@@ -405,7 +411,6 @@ function removeSelected(){
                     var currentDate = new Date();
                     var currentMonth = currentDate.getMonth() + 1; // JavaScript months are zero-based
                     var currentYear = currentDate.getFullYear();
-console.log(currentMonth);
                     // Update filter form values
                     $('#building').val(building_id);
                     $('#month').val(currentMonth);

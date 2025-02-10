@@ -87,17 +87,10 @@ class BillController extends Controller
         $selectedBills = $request->input('select_bills', []);
         $bills = Bill::whereIn('id', $selectedBills)->get();
 
-        // $bills = Bill::whereIn('id', [1,2,3,4])->get();
-
         $chunks = $bills->chunk(2);
     
         $pdf = PDF::loadView('admin.bill.pdf.pdf-template', ['data' => $chunks])
-                    ->setPaper('a4', 'portrait'); // A4 size paper
-    
-        // $filePath = storage_path('app/temp/test.pdf');
-
-        // $pdf->save($filePath);
-        // dd('asd');        
+                    ->setPaper('a4', 'portrait'); // A4 size paper    
 
 
         return $pdf->download(Carbon::now()->format('d-m-Y').'-bills.pdf'); // Forces a PDF download
