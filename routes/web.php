@@ -5,6 +5,7 @@ use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\FlatController;
 use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SiteConfigurationController;
 use App\Http\Controllers\TenantController;
 use Illuminate\Support\Facades\Route;
@@ -113,6 +114,11 @@ Route::group([ 'as' => 'admin.'], function () {
         Route::post('/update', [BillController::class,'update'])->name('update');
         Route::post('/pdf-print', [BillController::class,'billPrint'])->name('pdf-print');
         Route::get('/generate-bill/{id}', [BillController::class,'generateBill'])->name('generate-bill');
+    });
+
+    // Reports
+    Route::group(['prefix'=> 'report' , 'as' => 'report.'], function () {
+        Route::get('/', [ReportController::class,'index'])->name('index');
     });
 
     // Payment

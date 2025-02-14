@@ -43,6 +43,13 @@
                             </a>
                         </li>
 
+                        <li class="sidebar-item  {{ Str::contains(Request::url(), 'report') ? 'active' : '' }}">
+                            <a href="{{ route('admin.report.index')}}" class='sidebar-link'>
+                                <i class="bi bi-file-earmark-bar-graph"></i>
+                                <span>Reports</span>
+                            </a>
+                        </li>
+
                         <li class="sidebar-item  {{ Str::contains(Request::url(), 'account-configuration') ? 'active' : '' }}">
                             <a href="{{ route('admin.siteconfig.index')}}" class='sidebar-link'>
                                 <i class="bi bi-gear"></i>
